@@ -51,15 +51,15 @@
       <div class="step active">
         <h2>Step 1: Account Information</h2>
         <label>Full Name</label>
-        <input type="text" required>
+        <input type="text" placeholder="Enter Full Name" required>
         <label>Email Address</label>
-        <input type="email" required>
+        <input type="email" placeholder="Enter Email Address" required>
         <label>Address</label>
-        <input type="text" placeholder="Address" required>
+        <input type="text" placeholder="Enter Address" required>
         <label>Country</label>
-        <input type="text" placeholder="Country" required>
+        <input type="text" placeholder="Enter Country" required>
         <label>State</label>
-        <input type="text" placeholder="State" required>
+        <input type="text" placeholder="Enter State" required>
         <div class="nav-buttons">
           <span></span>
           <button type="button" onclick="nextStepWithValidation()">Next</button>
@@ -70,7 +70,7 @@
       <div class="step card-step">
         <label>Search Pokémon</label>
         <div class="search-container">
-          <input type="text" class="pokemonSearch" placeholder="Start Typing" autocomplete="off" required data-field="pokemon">
+          <input type="text" class="pokemonSearch" placeholder="Enter Pokémon Name" autocomplete="off" required data-field="pokemon">
           <div class="results"></div>
         </div>
 
@@ -90,22 +90,26 @@
         <div class="row">
           <div>
             <label>Year</label>
-            <input type="text" placeholder="Start Typing" data-field="year">
+            <input type="text" placeholder="Enter Year" data-field="year">
           </div>
           <div>
-            <label>Set</label>
-            <input type="text" placeholder="Start Typing" data-field="set">
+            <label>Notation</label>
+            <div style="display:flex; gap:5px;">
+              <input type="text" placeholder="Card #" data-field="notationNum" style="flex:1; padding:10px; font-size:14px;">
+              <span style="align-self:center;">/</span>
+              <input type="text" placeholder="Set Size" data-field="notationTotal" style="flex:1; padding:10px; font-size:14px;">
+            </div>
           </div>
         </div>
 
         <div class="row">
           <div>
-            <label>Edition</label>
-            <input type="text" placeholder="Start Typing" data-field="edition">
+            <label>Set</label>
+            <input type="text" placeholder="Enter Set Name" data-field="set">
           </div>
           <div>
             <label>Declared Value ($)</label>
-            <input type="number" placeholder="Start Typing" data-field="declared">
+            <input type="number" placeholder="Enter Declared Value" data-field="declared">
           </div>
         </div>
 
@@ -258,21 +262,24 @@ function populateCheckout(){
     const variant = card.querySelector('select[data-field="variant"]').value || "";
     const year = card.querySelector('input[data-field="year"]').value || "";
     const set = card.querySelector('input[data-field="set"]').value || "";
-    const edition = card.querySelector('input[data-field="edition"]').value || "";
+    const notationNum = card.querySelector('input[data-field="notationNum"]').value || "";
+    const notationTotal = card.querySelector('input[data-field="notationTotal"]').value || "";
+    const notation = notationNum && notationTotal ? notationNum + "/" + notationTotal : "";
     const declared = card.querySelector('input[data-field="declared"]').value || "";
+
     container.innerHTML+=`<div class="card-review">
       <strong>Card #${index+1}</strong><br>
       Pokémon: ${pokemon}<br>
       Variant: ${variant}<br>
       Year: ${year}<br>
+      Notation: ${notation}<br>
       Set: ${set}<br>
-      Edition: ${edition}<br>
       Declared Value: ${declared}
     </div>`;
   });
 
-  const country = document.querySelector(".step.active input[placeholder='Country']")?.value || "";
-  const state = document.querySelector(".step.active input[placeholder='State']")?.value || "";
+  const country = document.querySelector(".step.active input[placeholder='Enter Country']")?.value || "";
+  const state = document.querySelector(".step.active input[placeholder='Enter State']")?.value || "";
   const taxRate = getTaxRate(country,state);
 
   let total = cards.length*25 + 10; // cards + shipping
@@ -322,9 +329,9 @@ function submitFinalStep(){
   const accountStep = steps[0];
   const name = accountStep.querySelector('input[type="text"]').value;
   const email = accountStep.querySelector('input[type="email"]').value;
-  const address = accountStep.querySelector('input[placeholder="Address"]').value;
-  const country = accountStep.querySelector('input[placeholder="Country"]').value;
-  const state = accountStep.querySelector('input[placeholder="State"]').value;
+  const address = accountStep.querySelector('input[placeholder="Enter Address"]').value;
+  const country = accountStep.querySelector('input[placeholder="Enter Country"]').value;
+  const state = accountStep.querySelector('input[placeholder="Enter State"]').value;
 
   const cards = document.querySelectorAll(".card-step");
   let cardDetails = "";
@@ -333,9 +340,11 @@ function submitFinalStep(){
     const variant = card.querySelector('select[data-field="variant"]').value || "";
     const year = card.querySelector('input[data-field="year"]').value || "";
     const set = card.querySelector('input[data-field="set"]').value || "";
-    const edition = card.querySelector('input[data-field="edition"]').value || "";
+    const notationNum = card.querySelector('input[data-field="notationNum"]').value || "";
+    const notationTotal = card.querySelector('input[data-field="notationTotal"]').value || "";
+    const notation = notationNum && notationTotal ? notationNum + "/" + notationTotal : "";
     const declared = card.querySelector('input[data-field="declared"]').value || "";
-    cardDetails += `Card #${index+1}\nPokémon: ${pokemon}\nVariant: ${variant}\nYear: ${year}\nSet: ${set}\nEdition: ${edition}\nDeclared Value: ${declared}\n\n`;
+    cardDetails += `Card #${index+1}\nPokémon: ${pokemon}\nVariant: ${variant}\nYear: ${year}\nNotation: ${notation}\nSet: ${set}\nDeclared Value: ${declared}\n\n`;
   });
 
   const totalAmount = document.getElementById("totalBox").textContent;
