@@ -189,43 +189,27 @@
   </div>
 </div>
 
-<!-- ITEM -->
+<!-- ITEM TYPE -->
 <div class="step" id="itemPage">
-  <h2>Add Item</h2>
+  <h2>Select Card Type</h2>
 
-  <label>Type</label>
-  <select id="cardType">
-    <option value="Card">Card</option>
-    <option value="Pack">Pack</option>
-  </select>
-
-  <label>Card Name</label>
-  <input id="cardName">
-
-  <label>Card Number</label>
-  <input id="cardNumber">
-
-  <label>Year</label>
-  <input id="cardYear">
-
-  <label>Brand / Title</label>
-  <input id="cardBrand">
-
-  <label>Category</label>
-  <input id="cardCategory">
-
-  <label>Variety / Set</label>
-  <input id="cardVariety">
-
-  <label>Finish</label>
-  <input id="cardFinish">
-
-  <label>Declared Value</label>
-  <input id="declared">
-
-  <button onclick="addItem()">Add Item</button>
-
-  <div id="cart"></div>
+  <div id="cardTypeList">
+    <div class="tier-box" onclick="selectCardType(this,'Sports')">Sports</div>
+    <div class="tier-box" onclick="selectCardType(this,'Pokemon')">Pokemon</div>
+    <div class="tier-box" onclick="selectCardType(this,'Yu-Gi-Oh')">Yu-Gi-Oh</div>
+    <div class="tier-box" onclick="selectCardType(this,'Magic: The Gathering')">Magic of the Gathering</div>
+    <div class="tier-box" onclick="selectCardType(this,'Digimon')">Digimon</div>
+    <div class="tier-box" onclick="selectCardType(this,'Dragon Ball')">Dragon Ball</div>
+    <div class="tier-box" onclick="selectCardType(this,'One Piece')">One Piece</div>
+    <div class="tier-box" onclick="selectCardType(this,'Flesh and Blood')">Flesh and Blood</div>
+    <div class="tier-box" onclick="selectCardType(this,'Marvel')">Marvel</div>
+    <div class="tier-box" onclick="selectCardType(this,'Star Wars')">Star Wars</div>
+    <div class="tier-box" onclick="selectCardType(this,'Garbage Pail Kids')">Garbage Pail Kids</div>
+    <div class="tier-box" onclick="selectCardType(this,'Gwent')">Gwent</div>
+    <div class="tier-box" onclick="selectCardType(this,'Hearthstone')">Hearthstone</div>
+    <div class="tier-box" onclick="selectCardType(this,'Legends of Runeterra')">Legends of Runeterra</div>
+    <div class="tier-box" onclick="selectCardType(this,'Custom')">Custom</div>
+  </div>
 
   <div class="nav">
     <button onclick="
@@ -236,6 +220,22 @@
       )
     ">Back</button>
 
+    <button onclick="goToDetails()">Next</button>
+  </div>
+</div>
+
+<!-- ITEM DETAILS (UPDATED DYNAMIC FIELDS) -->
+<div class="step" id="itemDetailsPage">
+  <h2>Add Item Details</h2>
+
+  <div id="dynamicFields"></div>
+
+  <button onclick="addItem()">Add Item</button>
+
+  <div id="cart"></div>
+
+  <div class="nav">
+    <button onclick="show('itemPage')">Back</button>
     <button onclick="show('donePage')">Next</button>
   </div>
 </div>
@@ -254,13 +254,14 @@ let service = "";
 let tier = "";
 let price = 0;
 let cards = [];
+let selectedCardType = "";
+let fieldOrder = [];
 
 function show(id){
   document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 }
 
-/* FIXED SERVICE SELECTION */
 function selectService(s){
   service = s;
 
@@ -278,7 +279,6 @@ function goService(){
   if(service === "Reholder") show("reholderPage");
 }
 
-/* FIXED TIER SELECTION (IMPORTANT) */
 function setTier(el, t, p){
   tier = t;
   price = p;
@@ -291,41 +291,100 @@ function setTier(el, t, p){
   el.classList.add("tier-selected");
 }
 
+function selectCardType(el, type){
+  document.querySelectorAll("#cardTypeList .tier-box").forEach(b=>{
+    b.classList.remove("tier-selected");
+  });
+
+  el.classList.add("tier-selected");
+  selectedCardType = type;
+}
+
+function goToDetails(){
+  if(!selectedCardType){
+    alert("Please select a card type.");
+    return;
+  }
+
+  buildFields();
+  show("itemDetailsPage");
+}
+
+function buildFields(){
+  const container = document.getElementById("dynamicFields");
+
+  let fields = [];
+
+  if(["Magic: The Gathering","Pokemon","Digimon","Dragon Ball","One Piece","Flesh and Blood"].includes(selectedCardType)){
+    fields = ["Year","Set","Character/Card Name","Card Number","Rarity","Finish/Edition"];
+  }
+  else if(selectedCardType === "Sports"){
+    fields = ["Year","Set","Player","RC/Veteran","Team","Variant","Card #"];
+  }
+  else if(selectedCardType === "Yu-Gi-Oh"){
+    fields = ["Year","Set","Card Name","Card #","Rarity","Edition"];
+  }
+  else if(["Marvel","Star Wars","Garbage Pail Kids"].includes(selectedCardType)){
+    fields = ["Year","Set","Character/Scene","Card Number","Rarity/Insert"];
+  }
+  else if(["Hearthstone","Gwent","Legends of Runeterra"].includes(selectedCardType)){
+    fields = ["Year","Set","Card Name","Cost/Type","Rarity"];
+  }
+  else if(selectedCardType === "Custom"){
+    fields = ["Year","Set","Character/Card Name","Player","Card Number","Team","Rarity","Variant","Finish/Edition","Rookie/Veteran"];
+  }
+
+  fieldOrder = fields;
+
+  container.innerHTML =
+    `<p><strong>Fill the box with N/A if nonapplicable</strong></p>` +
+    fields.map(f=>`
+      <label>${f}</label>
+      <input id="field_${f.replace(/[^a-zA-Z0-9]/g,'')}">
+    `).join("");
+}
+
 function addItem(){
-  cards.push({
-    type: document.getElementById("cardType").value,
-    name: document.getElementById("cardName").value,
-    number: document.getElementById("cardNumber").value,
-    year: document.getElementById("cardYear").value,
-    brand: document.getElementById("cardBrand").value,
-    category: document.getElementById("cardCategory").value,
-    variety: document.getElementById("cardVariety").value,
-    finish: document.getElementById("cardFinish").value,
-    declared: document.getElementById("declared").value,
+
+  let item = {
+    type: selectedCardType,
     service,
     tier,
     price
+  };
+
+  fieldOrder.forEach(f=>{
+    let id = "field_" + f.replace(/[^a-zA-Z0-9]/g,'');
+    let el = document.getElementById(id);
+    item[f] = el ? (el.value || "N/A") : "N/A";
   });
+
+  cards.push(item);
 
   render();
 
-  document.querySelectorAll("#itemPage input").forEach(i=>i.value="");
+  document.querySelectorAll("#itemDetailsPage input").forEach(i=>i.value="");
+
+  show("itemPage");
 }
 
 function render(){
   document.getElementById("cart").innerHTML =
     cards.map(c=>`
       <div style="padding:10px; border-bottom:1px solid #ddd;">
-        <strong>${c.name}</strong> (${c.type})<br>
-        #${c.number || "N/A"} | ${c.year || "N/A"}<br>
-        ${c.brand || ""} - ${c.category || ""}<br>
-        ${c.variety || ""} | ${c.finish || ""}<br>
-        ${c.service} / ${c.tier} - $${c.price}
+        <strong>${c.type}</strong><br>
+        ${Object.entries(c)
+          .filter(([k])=>k!=="type"&&k!=="service"&&k!=="tier"&&k!=="price")
+          .map(([k,v])=>`${k}: ${v}`).join("<br>")}
+        <br>${c.service} / ${c.tier} - $${c.price}
       </div>
     `).join("");
 }
 
 </script>
+
+</body>
+</html>>
 
 </body>
 </html>
