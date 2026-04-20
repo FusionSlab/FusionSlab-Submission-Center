@@ -2,204 +2,329 @@
 <html>
 <head>
   <title>FusionSlab Submission Center</title>
-  <link rel="icon" type="image/png" href="web-app-manifest-512x512.png">
 
   <style>
-    body { font-family: Arial, Helvetica, sans-serif; margin: 0; background-color: #ffffff; color: #222; }
-    .header { background-color: #0033a0; color: white; padding: 20px; text-align: center; font-size: 26px; font-weight: bold; width:100%; }
-    .slogan { font-size: 14px; margin-top: 6px; }
-    .container { width: 95%; max-width: 850px; margin: 40px auto; }
-    h2 { border-bottom: 2px solid #0033a0; padding-bottom: 8px; }
-    .step { display: none; }
-    .active { display: block; }
-    label { display: block; margin-top: 15px; font-weight: bold; }
-    input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
-    .search-container { position: relative; }
-    .results { position: absolute; width: 100%; background: white; border: 1px solid #ccc; max-height: 200px; overflow-y: auto; display: none; z-index: 1000; }
-    .results div { padding: 8px; cursor: pointer; }
-    .results div:hover { background-color: #f0f0f0; }
-    .row { display: flex; gap: 20px; }
-    .row div { flex: 1; }
-    .nav-buttons { margin-top: 30px; display: flex; justify-content: space-between; }
-    button { padding: 12px 20px; background-color: #d71920; color: white; border: none; font-size: 15px; cursor: pointer; border-radius: 4px; font-weight: bold; }
-    button:hover { background-color: #b5151b; }
-    .footer { text-align: center; margin-top: 60px; padding: 20px; font-size: 13px; color: #777; border-top: 1px solid #eee; }
-    .popup {
-      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      background-color: #d71920; color: white; font-size: 24px;
-      padding: 30px; border-radius: 10px; text-align: center;
-      z-index: 9999; display: none;
+    body { font-family: Arial; margin:0; background:#f5f6f8; }
+
+    .header {
+      background:#0033a0;
+      color:white;
+      padding:18px;
+      text-align:center;
+      font-size:24px;
+      font-weight:bold;
     }
-    .popup.green { background-color: green; }
-    .card-review { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 6px; background-color: #f9f9f9; }
-    .total-box { margin-top: 15px; font-weight: bold; font-size: 16px; }
-    .packaging-instructions { margin-top: 20px; padding: 15px; border: 2px solid #0033a0; border-radius: 6px; background-color: #f4f4f4; }
-    .packaging-instructions ol { padding-left: 20px; }
-    #confirmationMessage { font-size: 20px; color: green; text-align: center; margin-top: 20px; font-weight: bold; }
-    * { box-sizing: border-box; }
+
+    .container {
+      max-width:800px;
+      margin:30px auto;
+      background:white;
+      padding:25px;
+      border-radius:6px;
+    }
+
+    .step { display:none; }
+    .active { display:block; }
+
+    input, select {
+      width:100%;
+      padding:10px;
+      margin-top:5px;
+    }
+
+    label { display:block; margin-top:12px; font-weight:bold; }
+
+    button {
+      margin-top:20px;
+      padding:10px 15px;
+      background:#d71920;
+      color:white;
+      border:none;
+      cursor:pointer;
+    }
+
+    .tier-box {
+      border:2px solid #ccc;
+      padding:15px;
+      margin-top:15px;
+      cursor:pointer;
+      border-radius:6px;
+      display:flex;
+      justify-content:space-between;
+    }
+
+    .tier-selected {
+      border-color:#0033a0;
+      background:#e6edff;
+    }
+
+    .tier-price {
+      font-weight:bold;
+      color:black;
+    }
+
+    .nav {
+      display:flex;
+      justify-content:space-between;
+    }
   </style>
 </head>
 
 <body>
 
-<div class="header">
-  FusionSlab
-  <div class="slogan">Where Power Meets Precision.</div>
-</div>
+<div class="header">FusionSlab Submission Center</div>
 
 <div class="container">
-  <div class="popup" id="popupMessage">MUST FILL OUT ALL BLANKS!</div>
 
-  <form id="submissionForm">
-
-    <!-- STEP 1 -->
-    <div class="step active">
-      <h2>Step 1: Account Information</h2>
-
-      <label>Full Name</label>
-      <input type="text" required>
-
-      <label>Email Address</label>
-      <input type="email" required>
-
-      <label>Address</label>
-      <input type="text" required>
-
-      <label>Country</label>
-      <input type="text" required>
-
-      <label>State</label>
-      <input type="text" required>
-
-      <div class="nav-buttons">
-        <span></span>
-        <button type="button" onclick="nextStepWithValidation()">Next</button>
-      </div>
-    </div>
-
-    <!-- STEP 2 -->
-    <div class="step card-step active">
-      <h2>Step 2: Card Info</h2>
-
-      <label>Search Pokémon</label>
-      <div class="search-container">
-        <input type="text" class="pokemonSearch" required data-field="pokemon">
-        <div class="results"></div>
-      </div>
-
-      <label>Variant</label>
-      <select required data-field="variant">
-        <option value="">-- Select --</option>
-        <option>Regular</option>
-        <option>Holo</option>
-        <option>Reverse Holo</option>
-        <option>Full Art</option>
-      </select>
-
-      <label>Year</label>
-      <input type="text" data-field="year">
-
-      <label>Set</label>
-      <input type="text" data-field="set">
-
-      <label>Declared Value</label>
-      <input type="number" data-field="declared">
-
-      <div class="nav-buttons">
-        <button type="button" onclick="addAnotherCard()">Add Another Card</button>
-        <button type="button" onclick="nextStepWithValidation()">Next</button>
-      </div>
-    </div>
-
-    <!-- STEP 3 -->
-    <div class="step">
-      <h2>Step 3: Review</h2>
-      <div class="nav-buttons">
-        <button type="button" onclick="prevStep()">Back</button>
-        <button type="button" onclick="nextStep()">Proceed</button>
-      </div>
-    </div>
-
-    <!-- STEP 4 -->
-    <div class="step">
-      <h2>Step 4: Checkout</h2>
-
-      <div id="reviewCardsContainer"></div>
-
-      <div class="total-box" id="totalBox">Total: $0.00</div>
-
-      <div class="nav-buttons">
-        <button type="button" onclick="prevStep()">Back</button>
-        <button type="button" onclick="submitFinalStep()">Submit</button>
-      </div>
-    </div>
-
-    <!-- STEP 5 -->
-    <div class="step">
-      <h2>Submission Complete</h2>
-      <div id="confirmationMessage">Thank you! Your submission has been sent successfully.</div>
-    </div>
-
-  </form>
+<!-- ACCOUNT -->
+<div class="step active" id="accountPage">
+  <h2>Account</h2>
+  <input id="name" placeholder="Name">
+  <input id="email" placeholder="Email">
+  <button onclick="show('servicePage')">Next</button>
 </div>
 
-<div class="footer">© 2026 FusionSlab. All Rights Reserved.</div>
+<!-- SERVICE -->
+<div class="step" id="servicePage">
+  <h2>Select Service</h2>
 
-<!-- EMAILJS -->
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <div class="tier-box" onclick="selectService('Grading')"><strong>Grading</strong></div>
+  <div class="tier-box" onclick="selectService('Autographed')"><strong>Autographed</strong></div>
+  <div class="tier-box" onclick="selectService('Authentication')"><strong>Authentication</strong></div>
+  <div class="tier-box" onclick="selectService('Reholder')"><strong>Reholder</strong></div>
+
+  <div class="nav">
+    <button onclick="show('accountPage')">Back</button>
+    <button onclick="goService()">Next</button>
+  </div>
+</div>
+
+<!-- GRADING -->
+<div class="step" id="gradingPage">
+  <h2>Grading / Autographed Tiers</h2>
+
+  <div class="tier-box" onclick="setTier(this,'Value',15)">
+    <div>Value</div><div class="tier-price">$15</div>
+  </div>
+
+  <div class="tier-box" onclick="setTier(this,'Regular',25)">
+    <div>Regular</div><div class="tier-price">$25</div>
+  </div>
+
+  <div class="tier-box" onclick="setTier(this,'Express',40)">
+    <div>Express</div><div class="tier-price">$40</div>
+  </div>
+
+  <div class="tier-box" onclick="setTier(this,'Premium',90)">
+    <div>Premium</div><div class="tier-price">$90</div>
+  </div>
+
+  <div class="tier-box" onclick="setTier(this,'Walkthrough',150)">
+    <div>Walkthrough</div><div class="tier-price">$150</div>
+  </div>
+
+  <div class="nav">
+    <button onclick="show('servicePage')">Back</button>
+    <button onclick="show('itemPage')">Next</button>
+  </div>
+</div>
+
+<!-- AUTH -->
+<div class="step" id="authPage">
+  <h2>Authentication Tiers</h2>
+
+  <div class="tier-box" onclick="setTier(this,'Value',10)">
+    <div>Value</div><div class="tier-price">$10</div>
+  </div>
+
+  <div class="tier-box" onclick="setTier(this,'Regular',18)">
+    <div>Regular</div><div class="tier-price">$18</div>
+  </div>
+
+  <div class="tier-box" onclick="setTier(this,'Express',30)">
+    <div>Express</div><div class="tier-price">$30</div>
+  </div>
+
+  <div class="tier-box" onclick="setTier(this,'Premium',75)">
+    <div>Premium</div><div class="tier-price">$75</div>
+  </div>
+
+  <div class="tier-box" onclick="setTier(this,'Walkthrough',125)">
+    <div>Walkthrough</div><div class="tier-price">$125</div>
+  </div>
+
+  <div class="nav">
+    <button onclick="show('servicePage')">Back</button>
+    <button onclick="show('itemPage')">Next</button>
+  </div>
+</div>
+
+<!-- REHOLDER -->
+<div class="step" id="reholderPage">
+  <h2>Reholder Tiers</h2>
+
+  <div class="tier-box" onclick="setTier(this,'Value',10)">
+    <div>Value</div><div class="tier-price">$10</div>
+  </div>
+
+  <div class="tier-box" onclick="setTier(this,'Regular',15)">
+    <div>Regular</div><div class="tier-price">$15</div>
+  </div>
+
+  <div class="tier-box" onclick="setTier(this,'Express',25)">
+    <div>Express</div><div class="tier-price">$25</div>
+  </div>
+
+  <div class="tier-box" onclick="setTier(this,'Premium',40)">
+    <div>Premium</div><div class="tier-price">$40</div>
+  </div>
+
+  <div class="tier-box" onclick="setTier(this,'Walkthrough',60)">
+    <div>Walkthrough</div><div class="tier-price">$60</div>
+  </div>
+
+  <div class="nav">
+    <button onclick="show('servicePage')">Back</button>
+    <button onclick="show('itemPage')">Next</button>
+  </div>
+</div>
+
+<!-- ITEM -->
+<div class="step" id="itemPage">
+  <h2>Add Item</h2>
+
+  <label>Type</label>
+  <select id="cardType">
+    <option value="Card">Card</option>
+    <option value="Pack">Pack</option>
+  </select>
+
+  <label>Card Name</label>
+  <input id="cardName">
+
+  <label>Card Number</label>
+  <input id="cardNumber">
+
+  <label>Year</label>
+  <input id="cardYear">
+
+  <label>Brand / Title</label>
+  <input id="cardBrand">
+
+  <label>Category</label>
+  <input id="cardCategory">
+
+  <label>Variety / Set</label>
+  <input id="cardVariety">
+
+  <label>Finish</label>
+  <input id="cardFinish">
+
+  <label>Declared Value</label>
+  <input id="declared">
+
+  <button onclick="addItem()">Add Item</button>
+
+  <div id="cart"></div>
+
+  <div class="nav">
+    <button onclick="
+      show(
+        service === 'Grading' || service === 'Autographed' ? 'gradingPage' :
+        service === 'Authentication' ? 'authPage' :
+        'reholderPage'
+      )
+    ">Back</button>
+
+    <button onclick="show('donePage')">Next</button>
+  </div>
+</div>
+
+<!-- DONE -->
+<div class="step" id="donePage">
+  <h2>Done</h2>
+  <p>Submission Complete</p>
+</div>
+
+</div>
+
 <script>
-emailjs.init("-rXlMZTTg7hton9TE");
 
-let currentStep = 0;
-let steps = document.querySelectorAll(".step");
-const popup = document.getElementById("popupMessage");
+let service = "";
+let tier = "";
+let price = 0;
+let cards = [];
 
-function showStep(i){
-  steps.forEach(s => s.classList.remove("active"));
-  steps[i].classList.add("active");
-  currentStep = i;
+function show(id){
+  document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
 }
 
-function nextStep(){ showStep(currentStep+1); }
-function prevStep(){ showStep(currentStep-1); }
+/* FIXED SERVICE SELECTION */
+function selectService(s){
+  service = s;
 
-function validateStep(){
-  const inputs = steps[currentStep].querySelectorAll("input, select");
-  for(let i of inputs){
-    if(i.hasAttribute("required") && !i.value.trim()){
-      popup.style.display="block";
-      setTimeout(()=>popup.style.display="none",2000);
-      return false;
+  document.querySelectorAll("#servicePage .tier-box").forEach(b=>{
+    b.classList.remove("tier-selected");
+    if(b.innerText.includes(s)){
+      b.classList.add("tier-selected");
     }
-  }
-  return true;
+  });
 }
 
-function nextStepWithValidation(){
-  if(!validateStep()) return;
-  nextStep();
+function goService(){
+  if(service === "Grading" || service === "Autographed") show("gradingPage");
+  if(service === "Authentication") show("authPage");
+  if(service === "Reholder") show("reholderPage");
 }
 
-function addAnotherCard(){
-  alert("Card added (simplified version)");
-}
+/* FIXED TIER SELECTION (IMPORTANT) */
+function setTier(el, t, p){
+  tier = t;
+  price = p;
 
-function submitFinalStep(){
-
-  const email = document.querySelector('input[type="email"]').value;
-  const name = document.querySelector('input[type="text"]').value;
-
-  let cardDetails = "Submission from FusionSlab";
-
-  emailjs.send("service_vxuhfls", "template_ygmor47", {
-    user_email: email,
-    name: name,
-    cardDetails: cardDetails,
-    time: new Date().toLocaleString()
+  const page = el.closest(".step");
+  page.querySelectorAll(".tier-box").forEach(b=>{
+    b.classList.remove("tier-selected");
   });
 
-  showStep(4);
+  el.classList.add("tier-selected");
 }
+
+function addItem(){
+  cards.push({
+    type: document.getElementById("cardType").value,
+    name: document.getElementById("cardName").value,
+    number: document.getElementById("cardNumber").value,
+    year: document.getElementById("cardYear").value,
+    brand: document.getElementById("cardBrand").value,
+    category: document.getElementById("cardCategory").value,
+    variety: document.getElementById("cardVariety").value,
+    finish: document.getElementById("cardFinish").value,
+    declared: document.getElementById("declared").value,
+    service,
+    tier,
+    price
+  });
+
+  render();
+
+  document.querySelectorAll("#itemPage input").forEach(i=>i.value="");
+}
+
+function render(){
+  document.getElementById("cart").innerHTML =
+    cards.map(c=>`
+      <div style="padding:10px; border-bottom:1px solid #ddd;">
+        <strong>${c.name}</strong> (${c.type})<br>
+        #${c.number || "N/A"} | ${c.year || "N/A"}<br>
+        ${c.brand || ""} - ${c.category || ""}<br>
+        ${c.variety || ""} | ${c.finish || ""}<br>
+        ${c.service} / ${c.tier} - $${c.price}
+      </div>
+    `).join("");
+}
+
 </script>
 
 </body>
