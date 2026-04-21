@@ -67,6 +67,11 @@
       display:flex;
       justify-content:space-between;
     }
+
+    /* prevents weird focus loss in some environments */
+    .step.active {
+      pointer-events: auto;
+    }
   </style>
 </head>
 
@@ -224,7 +229,7 @@
   </div>
 </div>
 
-<!-- ITEM DETAILS (UPDATED DYNAMIC FIELDS) -->
+<!-- ITEM DETAILS -->
 <div class="step" id="itemDetailsPage">
   <h2>Add Item Details</h2>
 
@@ -236,7 +241,28 @@
 
   <div class="nav">
     <button onclick="show('itemPage')">Back</button>
-    <button onclick="show('donePage')">Next</button>
+    <button onclick="goCheckout()">Next</button>
+  </div>
+</div>
+
+<!-- CHECKOUT -->
+<div class="step" id="checkoutPage">
+  <h2>Checkout</h2>
+
+  <div id="orderSummary"></div>
+
+  <label>Shipping</label>
+  <select id="shippingSelect" onchange="updateTotal()">
+    <option value="20">Standard - $20</option>
+    <option value="35">Priority - $35</option>
+    <option value="60">Express - $60</option>
+  </select>
+
+  <h3 id="totalDisplay">Total: $0</h3>
+
+  <div class="nav">
+    <button onclick="show('itemDetailsPage')">Back</button>
+    <button onclick="completeOrder()">Submit Order</button>
   </div>
 </div>
 
@@ -258,8 +284,9 @@ let selectedCardType = "";
 let fieldOrder = [];
 
 function show(id){
-  document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+  document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
+  const next = document.getElementById(id);
+  next.classList.add("active");
 }
 
 function selectService(s){
@@ -335,17 +362,25 @@ function buildFields(){
   }
 
   fieldOrder = fields;
+  container.innerHTML = "";
 
-  container.innerHTML =
-    `<p><strong>Fill the box with N/A if nonapplicable</strong></p>` +
-    fields.map(f=>`
-      <label>${f}</label>
-      <input id="field_${f.replace(/[^a-zA-Z0-9]/g,'')}">
-    `).join("");
+  const note = document.createElement("p");
+  note.innerHTML = "<strong>Fill the box with N/A if nonapplicable</strong>";
+  container.appendChild(note);
+
+  fields.forEach(f => {
+    const label = document.createElement("label");
+    label.innerText = f;
+
+    const input = document.createElement("input");
+    input.id = "field_" + f.replace(/[^a-zA-Z0-9]/g,'');
+
+    container.appendChild(label);
+    container.appendChild(input);
+  });
 }
 
 function addItem(){
-
   let item = {
     type: selectedCardType,
     service,
@@ -360,11 +395,8 @@ function addItem(){
   });
 
   cards.push(item);
-
   render();
-
   document.querySelectorAll("#itemDetailsPage input").forEach(i=>i.value="");
-
   show("itemPage");
 }
 
@@ -381,10 +413,41 @@ function render(){
     `).join("");
 }
 
-</script>
+function goCheckout(){
+  buildCheckout();
+  show("checkoutPage");
+}
 
-</body>
-</html>>
+function buildCheckout(){
+  const summary = document.getElementById("orderSummary");
+
+  let subtotal = cards.reduce((sum, c) => sum + Number(c.price), 0);
+
+  summary.innerHTML =
+    `<p><strong>Items:</strong> ${cards.length}</p>` +
+    cards.map(c => `
+      <div style="border-bottom:1px solid #ddd; padding:8px 0;">
+        ${c.type} - ${c.service} / ${c.tier} : $${c.price}
+      </div>
+    `).join("") +
+    `<p><strong>Subtotal:</strong> $${subtotal}</p>`;
+
+  updateTotal();
+}
+
+function updateTotal(){
+  let subtotal = cards.reduce((sum, c) => sum + Number(c.price), 0);
+  let shipping = Number(document.getElementById("shippingSelect").value);
+  let total = subtotal + shipping;
+  document.getElementById("totalDisplay").innerText = "Total: $" + total;
+}
+
+function completeOrder(){
+  alert("Order Submitted!");
+  show("donePage");
+}
+
+</script>
 
 </body>
 </html>
