@@ -71,6 +71,14 @@
     .step.active {
       pointer-events: auto;
     }
+
+    /* FIXED ALIGNMENT ONLY */
+    .action-row {
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      margin-top:15px;
+    }
   </style>
 </head>
 
@@ -133,86 +141,38 @@
   </div>
 </div>
 
-<!-- AUTH -->
-<div class="step" id="authPage">
-  <h2>Authentication Tiers</h2>
-
-  <div class="tier-box" onclick="setTier(this,'Value',10)">
-    <div>Value</div><div class="tier-price">$10</div>
-  </div>
-
-  <div class="tier-box" onclick="setTier(this,'Regular',18)">
-    <div>Regular</div><div class="tier-price">$18</div>
-  </div>
-
-  <div class="tier-box" onclick="setTier(this,'Express',30)">
-    <div>Express</div><div class="tier-price">$30</div>
-  </div>
-
-  <div class="tier-box" onclick="setTier(this,'Premium',75)">
-    <div>Premium</div><div class="tier-price">$75</div>
-  </div>
-
-  <div class="tier-box" onclick="setTier(this,'Walkthrough',125)">
-    <div>Walkthrough</div><div class="tier-price">$125</div>
-  </div>
-
-  <div class="nav">
-    <button onclick="show('servicePage')">Back</button>
-    <button onclick="show('itemPage')">Next</button>
-  </div>
-</div>
-
-<!-- REHOLDER -->
-<div class="step" id="reholderPage">
-  <h2>Reholder Tiers</h2>
-
-  <div class="tier-box" onclick="setTier(this,'Value',10)">
-    <div>Value</div><div class="tier-price">$10</div>
-  </div>
-
-  <div class="tier-box" onclick="setTier(this,'Regular',15)">
-    <div>Regular</div><div class="tier-price">$15</div>
-  </div>
-
-  <div class="tier-box" onclick="setTier(this,'Express',25)">
-    <div>Express</div><div class="tier-price">$25</div>
-  </div>
-
-  <div class="tier-box" onclick="setTier(this,'Premium',40)">
-    <div>Premium</div><div class="tier-price">$40</div>
-  </div>
-
-  <div class="tier-box" onclick="setTier(this,'Walkthrough',60)">
-    <div>Walkthrough</div><div class="tier-price">$60</div>
-  </div>
-
-  <div class="nav">
-    <button onclick="show('servicePage')">Back</button>
-    <button onclick="show('itemPage')">Next</button>
-  </div>
-</div>
-
 <!-- ITEM TYPE -->
 <div class="step" id="itemPage">
-  <h2>Select Card Type</h2>
+  <h2>Select Type</h2>
 
   <div id="cardTypeList">
-    <div class="tier-box" onclick="selectCardType(this,'Sports')">Sports</div>
+
     <div class="tier-box" onclick="selectCardType(this,'Pokemon')">Pokemon</div>
-    <div class="tier-box" onclick="selectCardType(this,'Yu-Gi-Oh')">Yu-Gi-Oh</div>
-    <div class="tier-box" onclick="selectCardType(this,'Magic: The Gathering')">Magic of the Gathering</div>
+    <div class="tier-box" onclick="selectCardType(this,'Amiibo')">Amiibo</div>
     <div class="tier-box" onclick="selectCardType(this,'Digimon')">Digimon</div>
     <div class="tier-box" onclick="selectCardType(this,'Dragon Ball')">Dragon Ball</div>
-    <div class="tier-box" onclick="selectCardType(this,'One Piece')">One Piece</div>
-    <div class="tier-box" onclick="selectCardType(this,'Flesh and Blood')">Flesh and Blood</div>
+    <div class="tier-box" onclick="selectCardType(this,'Garbage Pail Cards')">Garbage Pail</div>
+    <div class="tier-box" onclick="selectCardType(this,'Lorcana')">Lorcana</div>
     <div class="tier-box" onclick="selectCardType(this,'Marvel')">Marvel</div>
+    <div class="tier-box" onclick="selectCardType(this,'Magic: The Gathering')">Magic: The Gathering</div>
+    <div class="tier-box" onclick="selectCardType(this,'One Piece')">One Piece</div>
     <div class="tier-box" onclick="selectCardType(this,'Star Wars')">Star Wars</div>
-    <div class="tier-box" onclick="selectCardType(this,'Garbage Pail Kids')">Garbage Pail Kids</div>
-    <div class="tier-box" onclick="selectCardType(this,'Gwent')">Gwent</div>
-    <div class="tier-box" onclick="selectCardType(this,'Hearthstone')">Hearthstone</div>
-    <div class="tier-box" onclick="selectCardType(this,'Legends of Runeterra')">Legends of Runeterra</div>
+    <div class="tier-box" onclick="selectCardType(this,'YuGiOh')">YuGiOh</div>
+
+    <div class="tier-box" onclick="selectCardType(this,'Sports')">Baseball Cards</div>
+    <div class="tier-box" onclick="selectCardType(this,'Sports')">Basketball Cards</div>
+    <div class="tier-box" onclick="selectCardType(this,'Sports')">Football Cards</div>
+    <div class="tier-box" onclick="selectCardType(this,'Sports')">Golf Cards</div>
+    <div class="tier-box" onclick="selectCardType(this,'Sports')">Hockey Cards</div>
+    <div class="tier-box" onclick="selectCardType(this,'Sports')">Racing Cards</div>
+    <div class="tier-box" onclick="selectCardType(this,'Sports')">Soccer Cards</div>
+    <div class="tier-box" onclick="selectCardType(this,'Sports')">Tennis Cards</div>
+    <div class="tier-box" onclick="selectCardType(this,'Sports')">UFC Cards</div>
+    <div class="tier-box" onclick="selectCardType(this,'Sports')">Wrestling Cards</div>
+    <div class="tier-box" onclick="selectCardType(this,'Sports')">Boxing Cards</div>
+
     <div class="tier-box" onclick="selectCardType(this,'Custom')">Custom</div>
+
   </div>
 
   <div class="nav">
@@ -234,7 +194,10 @@
 
   <div id="dynamicFields"></div>
 
-  <button onclick="addItem()">Add Another Card</button>
+  <div class="action-row">
+    <button onclick="addItem()">Add Another Card</button>
+    <button onclick="addItem()">Add To Cart</button>
+  </div>
 
   <div id="cart"></div>
 
@@ -274,33 +237,143 @@
 </div>
 
 <script>
-// (unchanged JS)
 let service = "";
 let tier = "";
 let price = 0;
 let cards = [];
 let selectedCardType = "";
 let fieldOrder = [];
-function show(id){document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");}
-function selectService(s){service=s;document.querySelectorAll("#servicePage .tier-box").forEach(b=>{b.classList.remove("tier-selected");if(b.innerText.includes(s)){b.classList.add("tier-selected");}});}
-function goService(){if(service==="Grading"||service==="Autographed")show("gradingPage");if(service==="Authentication")show("authPage");if(service==="Reholder")show("reholderPage");}
-function setTier(el,t,p){tier=t;price=p;const page=el.closest(".step");page.querySelectorAll(".tier-box").forEach(b=>b.classList.remove("tier-selected"));el.classList.add("tier-selected");}
-function selectCardType(el,type){document.querySelectorAll("#cardTypeList .tier-box").forEach(b=>b.classList.remove("tier-selected"));el.classList.add("tier-selected");selectedCardType=type;}
-function goToDetails(){if(!selectedCardType){alert("Please select a card type.");return;}buildFields();show("itemDetailsPage");}
-function buildFields(){const container=document.getElementById("dynamicFields");let fields=[];if(["Magic: The Gathering","Pokemon","Digimon","Dragon Ball","One Piece","Flesh and Blood"].includes(selectedCardType)){fields=["Year","Set","Character/Card Name","Card Number","Rarity","Finish/Edition"];}
-else if(selectedCardType==="Sports"){fields=["Year","Set","Player","RC/Veteran","Team","Variant","Card #"];}
-else if(selectedCardType==="Yu-Gi-Oh"){fields=["Year","Set","Card Name","Card #","Rarity","Edition"];}
-else if(["Marvel","Star Wars","Garbage Pail Kids"].includes(selectedCardType)){fields=["Year","Set","Character/Scene","Card Number","Rarity/Insert"];}
-else if(["Hearthstone","Gwent","Legends of Runeterra"].includes(selectedCardType)){fields=["Year","Set","Card Name","Cost/Type","Rarity"];}
-else if(selectedCardType==="Custom"){fields=["Year","Set","Character/Card Name","Player","Card Number","Team","Rarity","Variant","Finish/Edition","Rookie/Veteran"];}
-fieldOrder=fields;container.innerHTML="";const note=document.createElement("p");note.innerHTML="<strong>Fill the box with N/A if nonapplicable</strong>";container.appendChild(note);
-fields.forEach(f=>{const label=document.createElement("label");label.innerText=f;const input=document.createElement("input");input.id="field_"+f.replace(/[^a-zA-Z0-9]/g,'');container.appendChild(label);container.appendChild(input);});}
-function addItem(){let item={type:selectedCardType,service,tier,price};fieldOrder.forEach(f=>{let id="field_"+f.replace(/[^a-zA-Z0-9]/g,'');let el=document.getElementById(id);item[f]=el?(el.value||"N/A"):"N/A";});cards.push(item);render();document.querySelectorAll("#itemDetailsPage input").forEach(i=>i.value="");show("itemPage");}
-function render(){document.getElementById("cart").innerHTML=cards.map(c=>`<div style="padding:10px; border-bottom:1px solid #ddd;"><strong>${c.type}</strong><br>${Object.entries(c).filter(([k])=>k!=="type"&&k!=="service"&&k!=="tier"&&k!=="price").map(([k,v])=>`${k}: ${v}`).join("<br>")}<br>${c.service} / ${c.tier} - $${c.price}</div>`).join("");}
-function goCheckout(){buildCheckout();show("checkoutPage");}
-function buildCheckout(){const summary=document.getElementById("orderSummary");let subtotal=cards.reduce((sum,c)=>sum+Number(c.price),0);summary.innerHTML=`<p><strong>Items:</strong> ${cards.length}</p>`+cards.map(c=>`<div style="border-bottom:1px solid #ddd; padding:8px 0;">${c.type} - ${c.service} / ${c.tier} : $${c.price}</div>`).join("")+`<p><strong>Subtotal:</strong> $${subtotal}</p>`;updateTotal();}
-function updateTotal(){let subtotal=cards.reduce((sum,c)=>sum+Number(c.price),0);let shipping=Number(document.getElementById("shippingSelect").value);let total=subtotal+shipping;document.getElementById("totalDisplay").innerText="Total: $"+total;}
-function completeOrder(){alert("Order Submitted!");show("donePage");}
+
+function show(id){
+  document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+function selectService(s){
+  service = s;
+  document.querySelectorAll("#servicePage .tier-box").forEach(b=>{
+    b.classList.remove("tier-selected");
+    if(b.innerText.includes(s)){
+      b.classList.add("tier-selected");
+    }
+  });
+}
+
+function goService(){
+  if(service === "Grading" || service === "Autographed") show("gradingPage");
+  if(service === "Authentication") show("authPage");
+  if(service === "Reholder") show("reholderPage");
+}
+
+function setTier(el, t, p){
+  tier = t;
+  price = p;
+  const page = el.closest(".step");
+  page.querySelectorAll(".tier-box").forEach(b=>{
+    b.classList.remove("tier-selected");
+  });
+  el.classList.add("tier-selected");
+}
+
+function selectCardType(el, type){
+  document.querySelectorAll("#cardTypeList .tier-box").forEach(b=>{
+    b.classList.remove("tier-selected");
+  });
+  el.classList.add("tier-selected");
+  selectedCardType = type;
+}
+
+function goToDetails(){
+  if(!selectedCardType){
+    alert("Please select a type.");
+    return;
+  }
+  buildFields();
+  show("itemDetailsPage");
+}
+
+function buildFields(){
+  const container = document.getElementById("dynamicFields");
+  let fields = [];
+
+  const tcgGroup = ["Pokemon","Amiibo","Digimon","Dragon Ball","Garbage Pail Cards","Lorcana","One Piece","Magic: The Gathering"];
+
+  if(tcgGroup.includes(selectedCardType)){
+    fields = ["Year","Set","Character/Card Name","Card Number","Rarity","Finish/Edition"];
+  }
+  else if(selectedCardType === "Sports"){
+    fields = ["Year","Set","Player","Team","Card #","Variant"];
+  }
+  else if(["Marvel","Star Wars"].includes(selectedCardType)){
+    fields = ["Year","Set","Character/Scene","Card Number","Rarity"];
+  }
+  else if(selectedCardType === "YuGiOh"){
+    fields = ["Year","Set","Card Name","Card #","Rarity","Edition"];
+  }
+  else if(selectedCardType === "Custom"){
+    fields = ["Year","Set","Card Name","Notes"];
+  }
+
+  fieldOrder = fields;
+  container.innerHTML = "";
+
+  const note = document.createElement("p");
+  note.innerHTML = "<strong>Fill with N/A if not applicable</strong>";
+  container.appendChild(note);
+
+  fields.forEach(f=>{
+    const label=document.createElement("label");
+    label.innerText=f;
+
+    const input=document.createElement("input");
+    input.id="field_"+f.replace(/[^a-zA-Z0-9]/g,'');
+
+    container.appendChild(label);
+    container.appendChild(input);
+  });
+}
+
+function addItem(){
+  let item={type:selectedCardType,service,tier,price};
+
+  fieldOrder.forEach(f=>{
+    let id="field_"+f.replace(/[^a-zA-Z0-9]/g,'');
+    let el=document.getElementById(id);
+    item[f]=el?(el.value||"N/A"):"N/A";
+  });
+
+  cards.push(item);
+  render();
+  document.querySelectorAll("#itemDetailsPage input").forEach(i=>i.value="");
+}
+
+function render(){
+  document.getElementById("cart").innerHTML =
+    cards.map(c=>`
+      <div style="padding:10px;border-bottom:1px solid #ddd;">
+        <strong>${c.type}</strong><br>
+        ${Object.entries(c)
+          .filter(([k])=>k!=="type"&&k!=="service"&&k!=="tier"&&k!=="price")
+          .map(([k,v])=>`${k}: ${v}`).join("<br>")}
+        <br>${c.service} / ${c.tier} - $${c.price}
+      </div>
+    `).join("");
+}
+
+function goCheckout(){
+  show("checkoutPage");
+}
+
+function updateTotal(){
+  let subtotal = cards.reduce((s,c)=>s+Number(c.price),0);
+  let shipping = Number(document.getElementById("shippingSelect").value);
+  document.getElementById("totalDisplay").innerText = "Total: $" + (subtotal+shipping);
+}
+
+function completeOrder(){
+  alert("Order Submitted!");
+  show("donePage");
+}
 </script>
 
 </body>
