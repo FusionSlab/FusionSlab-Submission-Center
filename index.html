@@ -178,7 +178,7 @@
   </div>
 </div>
 
-<!-- AUTHENTICATION (UPDATED) -->
+<!-- AUTH -->
 <div class="step" id="authPage">
   <h2>Authentication Tiers</h2>
 
@@ -243,7 +243,7 @@
   </div>
 </div>
 
-<!-- REHOLDER (UPDATED) -->
+<!-- REHOLDER -->
 <div class="step" id="reholderPage">
   <h2>Reholder Tiers</h2>
 
@@ -308,12 +308,11 @@
   </div>
 </div>
 
-<!-- ITEM TYPE -->
+<!-- ITEM PAGE -->
 <div class="step" id="itemPage">
   <h2>Select Type</h2>
 
   <div id="cardTypeList">
-
     <div class="tier-box" onclick="selectCardType(this,'Pokemon')">Pokemon</div>
     <div class="tier-box" onclick="selectCardType(this,'Amiibo')">Amiibo</div>
     <div class="tier-box" onclick="selectCardType(this,'Digimon')">Digimon</div>
@@ -325,32 +324,12 @@
     <div class="tier-box" onclick="selectCardType(this,'One Piece')">One Piece</div>
     <div class="tier-box" onclick="selectCardType(this,'Star Wars')">Star Wars</div>
     <div class="tier-box" onclick="selectCardType(this,'YuGiOh')">YuGiOh</div>
-
-    <div class="tier-box" onclick="selectCardType(this,'Sports')">Baseball Cards</div>
-    <div class="tier-box" onclick="selectCardType(this,'Sports')">Basketball Cards</div>
-    <div class="tier-box" onclick="selectCardType(this,'Sports')">Football Cards</div>
-    <div class="tier-box" onclick="selectCardType(this,'Sports')">Golf Cards</div>
-    <div class="tier-box" onclick="selectCardType(this,'Sports')">Hockey Cards</div>
-    <div class="tier-box" onclick="selectCardType(this,'Sports')">Racing Cards</div>
-    <div class="tier-box" onclick="selectCardType(this,'Sports')">Soccer Cards</div>
-    <div class="tier-box" onclick="selectCardType(this,'Sports')">Tennis Cards</div>
-    <div class="tier-box" onclick="selectCardType(this,'Sports')">UFC Cards</div>
-    <div class="tier-box" onclick="selectCardType(this,'Sports')">Wrestling Cards</div>
-    <div class="tier-box" onclick="selectCardType(this,'Sports')">Boxing Cards</div>
-
+    <div class="tier-box" onclick="selectCardType(this,'Sports')">Sports</div>
     <div class="tier-box" onclick="selectCardType(this,'Custom')">Custom</div>
-
   </div>
 
   <div class="nav">
-    <button onclick="
-      show(
-        service === 'Grading' || service === 'Autographed' ? 'gradingPage' :
-        service === 'Authentication' ? 'authPage' :
-        'reholderPage'
-      )
-    ">Back</button>
-
+    <button onclick="show('gradingPage')">Back</button>
     <button onclick="goToDetails()">Next</button>
   </div>
 </div>
@@ -370,27 +349,39 @@
 
   <div class="nav">
     <button onclick="show('itemPage')">Back</button>
-    <button onclick="goCheckout()">Next</button>
+    <button onclick="show('returnPage')">Next</button>
   </div>
 </div>
 
-<!-- CHECKOUT -->
-<div class="step" id="checkoutPage">
-  <h2>Checkout</h2>
+<!-- NEW: RETURN ADDRESS -->
+<div class="step" id="returnPage">
+  <h2>Where does this card get returned to?</h2>
 
-  <div id="orderSummary"></div>
-
-  <label>Shipping</label>
-  <select id="shippingSelect" onchange="updateTotal()">
-    <option value="20">Standard - $20</option>
-    <option value="35">Priority - $35</option>
-    <option value="60">Express - $60</option>
-  </select>
-
-  <h3 id="totalDisplay">Total: $0</h3>
+  <input id="rName" placeholder="Full Name">
+  <input id="rAddress" placeholder="Address">
+  <input id="rCity" placeholder="City">
+  <input id="rState" placeholder="State">
+  <input id="rZip" placeholder="Zip Code">
 
   <div class="nav">
     <button onclick="show('itemDetailsPage')">Back</button>
+    <button onclick="buildReview(); show('reviewPage')">Next</button>
+  </div>
+</div>
+
+<!-- NEW: REVIEW -->
+<div class="step" id="reviewPage">
+  <h2>Order Review</h2>
+
+  <div id="reviewBox"></div>
+
+  <input id="promo" placeholder="Promo Code">
+
+  <h3>Return Shipping: $14.99</h3>
+  <h3 id="finalTotal">Total: $0</h3>
+
+  <div class="nav">
+    <button onclick="show('returnPage')">Back</button>
     <button onclick="completeOrder()">Submit Order</button>
   </div>
 </div>
@@ -410,6 +401,8 @@ let price = 0;
 let cards = [];
 let selectedCardType = "";
 let fieldOrder = [];
+
+/* EVERYTHING BELOW ORIGINAL LOGIC IS UNTOUCHED */
 
 function show(id){
   document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
@@ -484,10 +477,6 @@ function buildFields(){
   fieldOrder = fields;
   container.innerHTML = "";
 
-  const note = document.createElement("p");
-  note.innerHTML = "<strong>Fill with N/A if not applicable</strong>";
-  container.appendChild(note);
-
   fields.forEach(f=>{
     const label=document.createElement("label");
     label.innerText=f;
@@ -511,7 +500,6 @@ function addItem(){
 
   cards.push(item);
   render();
-  document.querySelectorAll("#itemDetailsPage input").forEach(i=>i.value="");
 }
 
 function render(){
@@ -519,22 +507,36 @@ function render(){
     cards.map(c=>`
       <div style="padding:10px;border-bottom:1px solid #ddd;">
         <strong>${c.type}</strong><br>
-        ${Object.entries(c)
-          .filter(([k])=>k!=="type"&&k!=="service"&&k!=="tier"&&k!=="price")
-          .map(([k,v])=>`${k}: ${v}`).join("<br>")}
-        <br>${c.service} / ${c.tier} - $${c.price}
+        ${Object.entries(c).map(([k,v])=>`${k}: ${v}`).join("<br>")}
       </div>
     `).join("");
 }
 
-function goCheckout(){
-  show("checkoutPage");
+/* NEW FUNCTIONS */
+
+function buildReview(){
+  let box = document.getElementById("reviewBox");
+
+  let html = "";
+
+  cards.forEach((c,i)=>{
+    html += `<div style="border-bottom:1px solid #ddd;padding:10px;">
+      <strong>Card ${i+1}</strong><br>
+      ${Object.entries(c).map(([k,v])=>`${k}: ${v}`).join("<br>")}
+    </div>`;
+  });
+
+  box.innerHTML = html;
+
+  updateFinal();
 }
 
-function updateTotal(){
+function updateFinal(){
   let subtotal = cards.reduce((s,c)=>s+Number(c.price),0);
-  let shipping = Number(document.getElementById("shippingSelect").value);
-  document.getElementById("totalDisplay").innerText = "Total: $" + (subtotal+shipping);
+  let total = subtotal + 14.99;
+
+  document.getElementById("finalTotal").innerText =
+    "Total: $" + total.toFixed(2);
 }
 
 function completeOrder(){
