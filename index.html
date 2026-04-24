@@ -82,6 +82,13 @@
       margin-left:auto;
     }
   </style>
+
+  <!-- EMAILJS (ADDED ONLY) -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    emailjs.init("-rXlMZTTg7hton9TE");
+  </script>
+
 </head>
 
 <body>
@@ -402,41 +409,6 @@ let cards = [];
 let selectedCardType = "";
 let fieldOrder = [];
 
-/* PROMO SYSTEM */
-function applyPromo(subtotal, shipping){
-  let code = (document.getElementById("promo").value || "").trim().toUpperCase();
-
-  let totalCards = cards.length;
-
-  if(code === "FREE ORDER"){
-    subtotal = 0;
-  }
-
-  if(code === "FREE SHIPPING"){
-    shipping = 0;
-  }
-
-  if(code === "SLAB DEAL"){
-    subtotal = cards.reduce((s,c)=>s+Math.max(0,Number(c.price)-5),0);
-  }
-
-  if(code === "FREE REGULAR SLAB"){
-    subtotal = cards.reduce((s,c)=>{
-      if(c.tier === "Regular") return s;
-      return s + Number(c.price);
-    },0);
-  }
-
-  if(code === "FREE WALKTHROUGH SLAB"){
-    subtotal = cards.reduce((s,c)=>{
-      if(c.tier === "Walkthrough") return s;
-      return s + Number(c.price);
-    },0);
-  }
-
-  return {subtotal, shipping};
-}
-
 function show(id){
   document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
@@ -564,19 +536,31 @@ function buildReview(){
 
 function updateFinal(){
   let subtotal = cards.reduce((s,c)=>s+Number(c.price),0);
-  let shipping = 14.99;
-
-  let adjusted = applyPromo(subtotal, shipping);
-
-  let total = adjusted.subtotal + adjusted.shipping;
+  let total = subtotal + 14.99;
 
   document.getElementById("finalTotal").innerText =
     "Total: $" + total.toFixed(2);
 }
 
+/* ===== EMAILJS UPDATED COMPLETE ORDER ONLY ===== */
 function completeOrder(){
-  alert("Order Submitted!");
-  show("donePage");
+
+  const params = {
+    full_name: document.getElementById("name").value,
+    email: document.getElementById("email").value,
+    card_details: JSON.stringify(cards, null, 2),
+    timestamp: new Date().toISOString()
+  };
+
+  emailjs.send("service_vxuhfls", "template_ygmor47", params)
+    .then(() => {
+      alert("Order Submitted!");
+      show("donePage");
+    })
+    .catch((err) => {
+      console.error(err);
+      alert("Email failed to send.");
+    });
 }
 </script>
 
