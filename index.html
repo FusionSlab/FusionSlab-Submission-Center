@@ -353,15 +353,15 @@
   </div>
 </div>
 
-<!-- NEW: RETURN ADDRESS -->
+<!-- RETURN ADDRESS (FIXED ONLY HERE) -->
 <div class="step" id="returnPage">
   <h2>Where does this card get returned to?</h2>
 
   <input id="rName" placeholder="Full Name">
   <input id="rAddress" placeholder="Address">
   <input id="rCity" placeholder="City">
-  <input id="rState" placeholder="State">
-  <input id="rZip" placeholder="Zip Code">
+  <input id="rRegion" placeholder="State / Province / Region">
+  <input id="rCountry" placeholder="Country">
 
   <div class="nav">
     <button onclick="show('itemDetailsPage')">Back</button>
@@ -369,7 +369,7 @@
   </div>
 </div>
 
-<!-- NEW: REVIEW -->
+<!-- REVIEW -->
 <div class="step" id="reviewPage">
   <h2>Order Review</h2>
 
@@ -401,8 +401,6 @@ let price = 0;
 let cards = [];
 let selectedCardType = "";
 let fieldOrder = [];
-
-/* EVERYTHING BELOW ORIGINAL LOGIC IS UNTOUCHED */
 
 function show(id){
   document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
@@ -511,8 +509,6 @@ function render(){
       </div>
     `).join("");
 }
-
-/* NEW FUNCTIONS */
 
 function buildReview(){
   let box = document.getElementById("reviewBox");
