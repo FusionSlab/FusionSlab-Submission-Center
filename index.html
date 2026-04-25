@@ -550,31 +550,32 @@ function completeOrder(){
 
   const now = new Date();
 
+  // build full readable card breakdown (THIS FIXES YOUR "BIG BLOCK" ISSUE)
+  let reviewText = cards.map((c,i)=>{
+    return `Card ${i+1}\n` + Object.entries(c).map(([k,v])=>`${k}: ${v}`).join("\n");
+  }).join("\n\n----------------\n\n");
+
   const params = {
-    full_name: document.getElementById("name").value,
+    full_name: document.getElementById("rName").value,
     email: document.getElementById("email").value,
 
-    return_name: document.getElementById("rName").value,
     address: document.getElementById("rAddress").value,
     city: document.getElementById("rCity").value,
     state: document.getElementById("rRegion").value,
     country: document.getElementById("rCountry").value,
 
-    card_details: JSON.stringify(cards, null, 2),
+    card_details: reviewText,
+
     subtotal: subtotal.toFixed(2),
     shipping: "14.99",
     total: total.toFixed(2),
 
     promo: document.getElementById("promo").value || "NONE",
 
-    timestamp: now.toISOString(),
-    date: now.toLocaleDateString(),
-    time: now.toLocaleTimeString()
+    timestamp: now.toISOString()
   };
 
-  emailjs.send("service_vxuhfls", "template_ygmor47", params, {
-    publicKey: "-rXlMZTTg7hton9TE"
-  })
+  emailjs.send("service_vxuhfls", "template_ygmor47", params)
     .then(() => {
       alert("Order Submitted!");
       show("donePage");
