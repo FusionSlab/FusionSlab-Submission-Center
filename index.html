@@ -86,7 +86,7 @@
   <!-- EMAILJS (ADDED ONLY) -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
-    emailjs.init("-rXlMZTTg7hton9TE");
+    emailjs.init({ publicKey: "-rXlMZTTg7hton9TE" });
   </script>
 
 </head>
@@ -552,7 +552,9 @@ function completeOrder(){
     timestamp: new Date().toISOString()
   };
 
-  emailjs.send("service_vxuhfls", "template_ygmor47", params)
+  emailjs.send("service_vxuhfls", "template_ygmor47", params, {
+    publicKey: "-rXlMZTTg7hton9TE"
+  })
     .then(() => {
       alert("Order Submitted!");
       show("donePage");
