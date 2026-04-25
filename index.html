@@ -545,11 +545,31 @@ function updateFinal(){
 /* ===== EMAILJS UPDATED COMPLETE ORDER ONLY ===== */
 function completeOrder(){
 
+  let subtotal = cards.reduce((s,c)=>s+Number(c.price),0);
+  let total = subtotal + 14.99;
+
+  const now = new Date();
+
   const params = {
     full_name: document.getElementById("name").value,
     email: document.getElementById("email").value,
+
+    return_name: document.getElementById("rName").value,
+    address: document.getElementById("rAddress").value,
+    city: document.getElementById("rCity").value,
+    state: document.getElementById("rRegion").value,
+    country: document.getElementById("rCountry").value,
+
     card_details: JSON.stringify(cards, null, 2),
-    timestamp: new Date().toISOString()
+    subtotal: subtotal.toFixed(2),
+    shipping: "14.99",
+    total: total.toFixed(2),
+
+    promo: document.getElementById("promo").value || "NONE",
+
+    timestamp: now.toISOString(),
+    date: now.toLocaleDateString(),
+    time: now.toLocaleTimeString()
   };
 
   emailjs.send("service_vxuhfls", "template_ygmor47", params, {
