@@ -82,7 +82,6 @@
       margin-left:auto;
     }
   </style>
-
   <!-- EMAILJS (ADDED ONLY) -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
@@ -413,6 +412,13 @@ let price = 0;
 let cards = [];
 let selectedCardType = "";
 let fieldOrder = [];
+function formatKey(k){
+  if(k === "type") return "Type";
+  if(k === "service") return "Service";
+  if(k === "tier") return "Tier";
+  if(k === "price") return "Price";
+  return k;
+}
 
 function show(id){
   document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
@@ -528,7 +534,7 @@ function render(){
     cards.map(c=>`
       <div style="padding:10px;border-bottom:1px solid #ddd;">
         <strong>${c.type}</strong><br>
-        ${Object.entries(c).map(([k,v])=>`${k}: ${v}`).join("<br>")}
+        ${Object.entries(c).map(([k,v])=>`${formatKey(k)}: ${v}`).join("<br>")}
       </div>
     `).join("");
 }
@@ -541,7 +547,7 @@ function buildReview(){
   cards.forEach((c,i)=>{
     html += `<div style="border-bottom:1px solid #ddd;padding:10px;">
       <strong>Card ${i+1}</strong><br>
-      ${Object.entries(c).map(([k,v])=>`${k}: ${v}`).join("<br>")}
+      ${Object.entries(c).map(([k,v])=>`${formatKey(k)}: ${v}`).join("<br>")}
     </div>`;
   });
 
