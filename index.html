@@ -386,7 +386,7 @@
 
   <div id="reviewBox"></div>
 
-  <input id="promo" placeholder="Promo Code">
+ <input id="promo" placeholder="Promo Code" oninput="updateFinal()">
 
   <h3>Return Shipping: $14.99</h3>
   <h3 id="finalTotal">Total: $0</h3>
@@ -410,6 +410,13 @@ let service = "";
 let tier = "";
 let price = 0;
 let cards = [];
+
+let promoData = {
+  code: "",
+  discount: 0,
+  freeShipping: false
+};
+
 let selectedCardType = "";
 let fieldOrder = [];
 function formatKey(k){
@@ -563,12 +570,12 @@ function updateFinal(){
   document.getElementById("finalTotal").innerText =
     "Total: $" + total.toFixed(2);
 }
-
 /* ===== EMAILJS UPDATED COMPLETE ORDER ONLY ===== */
 function completeOrder(){
 
-  let subtotal = cards.reduce((s,c)=>s+Number(c.price),0);
-  let total = subtotal + 14.99;
+let subtotal = cards.reduce((s,c)=>s+Number(c.price),0);
+let shipping = promoData.freeShipping ? 0 : 14.99;
+let total = subtotal - promoData.discount + shipping;
 
   const now = new Date();
 
