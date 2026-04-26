@@ -347,10 +347,15 @@
 
   <div id="dynamicFields"></div>
 
-  <div class="action-row">
-    <button onclick="addItem()">Add Another Card</button>
-    <button onclick="addItem()">Add To Cart</button>
-  </div>
+<div class="action-row">
+  <button type="button" onclick="addItem(true)">
+    Add Another Card
+  </button>
+
+  <button type="button" onclick="addItem(false)">
+    Add To Cart
+  </button>
+</div>
 
   <div id="cart"></div>
 
@@ -416,18 +421,20 @@ function show(id){
 
 function selectService(s){
   service = s;
+
   document.querySelectorAll("#servicePage .tier-box").forEach(b=>{
     b.classList.remove("tier-selected");
-    if(b.innerText.includes(s)){
-      b.classList.add("tier-selected");
-    }
   });
+
+  event.target.closest(".tier-box").classList.add("tier-selected");
 }
 
 function goService(){
-  if(service === "Grading" || service === "Autographed") show("gradingPage");
-  if(service === "Authentication") show("authPage");
-  if(service === "Reholder") show("reholderPage");
+  if(service === "Grading" || service === "Autographed") return show("gradingPage");
+  if(service === "Authentication") return show("authPage");
+  if(service === "Reholder") return show("reholderPage");
+
+  alert("Please select a service first.");
 }
 
 function setTier(el, t, p){
@@ -494,17 +501,26 @@ function buildFields(){
   });
 }
 
-function addItem(){
-  let item={type:selectedCardType,service,tier,price};
+function addItem(goBack){
+  let item = {
+    type: selectedCardType,
+    service,
+    tier,
+    price
+  };
 
   fieldOrder.forEach(f=>{
-    let id="field_"+f.replace(/[^a-zA-Z0-9]/g,'');
-    let el=document.getElementById(id);
-    item[f]=el?(el.value||"N/A"):"N/A";
+    let id = "field_" + f.replace(/[^a-zA-Z0-9]/g,'');
+    let el = document.getElementById(id);
+    item[f] = el ? (el.value || "N/A") : "N/A";
   });
 
   cards.push(item);
   render();
+
+  if(goBack){
+    show("itemPage");
+  }
 }
 
 function render(){
