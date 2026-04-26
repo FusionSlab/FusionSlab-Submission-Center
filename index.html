@@ -572,10 +572,10 @@ function completeOrder(){
 
   const now = new Date();
 
-  let reviewText = cards.map((c,i)=>{
-    return `Card ${i+1}\n` +
-      Object.entries(c).map(([k,v])=>`${k}: ${v}`).join("\n");
-  }).join("\n\n----------------\n\n");
+let reviewText = cards.map((c,i)=>{
+  return `Card ${i+1}\n` +
+    Object.entries(c).map(([k,v])=>`${formatKey(k)}: ${v}`).join("\n");
+}).join("\n\n----------------\n\n");
 
   const params = {
     name: document.getElementById("name").value || "",
