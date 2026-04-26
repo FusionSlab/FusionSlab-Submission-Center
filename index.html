@@ -386,7 +386,12 @@
 
   <div id="reviewBox"></div>
 
- <input id="promo" placeholder="Promo Code" oninput="updateFinal()">
+<div style="display:flex; gap:10px; margin-top:10px;">
+  <input id="promo" placeholder="Promo Code" style="flex:1;">
+  <button type="button" onclick="applyPromo()">Apply</button>
+</div>
+
+<div id="promoMessage" style="margin-top:8px;font-weight:bold;"></div>
 
   <h3>Return Shipping: $14.99</h3>
   <h3 id="finalTotal">Total: $0</h3>
@@ -565,10 +570,63 @@ function buildReview(){
 
 function updateFinal(){
   let subtotal = cards.reduce((s,c)=>s+Number(c.price),0);
-  let total = subtotal + 14.99;
+
+  let shipping = promoData.freeShipping ? 0 : 14.99;
+
+  let total = subtotal - promoData.discount + shipping;
 
   document.getElementById("finalTotal").innerText =
-    "Total: $" + total.toFixed(2);
+    `Total: $${total.toFixed(2)}`;
+}
+
+function applyPromo(){
+  let code = document.getElementById("promo").value.trim().toUpperCase();
+  let message = document.getElementById("promoMessage");
+
+  let subtotal = cards.reduce((s,c)=>s+Number(c.price),0);
+
+  promoData = {
+    code,
+    discount: 0,
+    freeShipping: false
+  };
+
+  if(code === "FREE SLAB"){
+    if(cards.length >= 5 && (tier === "Value" || tier === "Regular")){
+      promoData.discount = cards[0]?.price || 0;
+      message.innerText = "Free slab applied";
+    } else {
+      message.innerText = "Requires 5+ Value/Regular slabs";
+      return;
+    }
+  }
+
+  else if(code === "10% OFF"){
+    promoData.discount = Math.min(subtotal * 0.10, 100);
+    message.innerText = "10% off applied";
+  }
+
+  else if(code === "SHIP FREE"){
+    promoData.freeShipping = true;
+    message.innerText = "Free shipping applied";
+  }
+
+  else if(code === "SLAB DEAL"){
+    promoData.discount = Math.min(cards.length * 5, 50);
+    message.innerText = "$5 per slab applied";
+  }
+
+  else if(code === "FREE ORDER"){
+    promoData.discount = Math.min(subtotal, 100);
+    message.innerText = "Up to $100 off applied";
+  }
+
+  else {
+    message.innerText = "Invalid promo code";
+    return;
+  }
+
+  updateFinal();
 }
 /* ===== EMAILJS UPDATED COMPLETE ORDER ONLY ===== */
 function completeOrder(){
@@ -596,7 +654,7 @@ let reviewText = cards.map((c,i)=>{
     cardDetails: reviewText,
 
     subtotal: subtotal.toFixed(2),
-    shipping: "14.99",
+    shipping: (promoData.freeShipping ? "0.00" : "14.99"),
     total: total.toFixed(2),
 
     promo: document.getElementById("promo").value || "NONE",
