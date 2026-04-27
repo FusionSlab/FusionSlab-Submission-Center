@@ -406,24 +406,33 @@
 <div class="step" id="donePage">
   <h2>Done</h2>
   <p>Submission Complete</p>
+<div style="display:flex; flex-direction:column; align-items:center; margin-top:20px;">
 
-  <div style="text-align:center; margin-top:20px;">
+  <!-- wrapper so arrow can sit OUTSIDE the wheel -->
+  <div style="position:relative; width:300px; height:300px;">
 
     <!-- WHEEL -->
     <canvas id="promoWheel" width="300" height="300"></canvas>
 
-    <!-- ARROW (OUTSIDE, POINTING LEFT, ABOVE BUTTON) -->
-    <div style="font-size:28px; margin:10px 0;">
+    <!-- ARROW (RIGHT SIDE, POINTING LEFT, TOUCHING EDGE) -->
+    <div style="
+      position:absolute;
+      right:-25px;
+      top:50%;
+      transform:translateY(-50%);
+      font-size:28px;
+    ">
       ⬅️
     </div>
 
-    <!-- BUTTON -->
-    <button id="spinBtn" onclick="spinWheel()">Spin Once</button>
-
-    <!-- RESULT -->
-    <div id="wheelResult" style="margin-top:15px; font-weight:bold;"></div>
-
   </div>
+
+  <!-- BUTTON -->
+  <button id="spinBtn" onclick="spinWheel()">Spin</button>
+
+  <!-- RESULT -->
+  <div id="wheelResult" style="margin-top:15px; font-weight:bold;"></div>
+
 </div>
 <script>
 let service = "";
