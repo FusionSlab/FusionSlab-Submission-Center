@@ -406,10 +406,25 @@
 <div class="step" id="donePage">
   <h2>Done</h2>
   <p>Submission Complete</p>
-</div>
 
-</div>
+  <div style="text-align:center; margin-top:20px;">
 
+    <!-- WHEEL -->
+    <canvas id="promoWheel" width="300" height="300"></canvas>
+
+    <!-- ARROW (OUTSIDE, POINTING LEFT, ABOVE BUTTON) -->
+    <div style="font-size:28px; margin:10px 0;">
+      ⬅️
+    </div>
+
+    <!-- BUTTON -->
+    <button id="spinBtn" onclick="spinWheel()">Spin Once</button>
+
+    <!-- RESULT -->
+    <div id="wheelResult" style="margin-top:15px; font-weight:bold;"></div>
+
+  </div>
+</div>
 <script>
 let service = "";
 let tier = "";
@@ -627,6 +642,118 @@ function applyPromo(){
   }
 
   updateFinal();
+}
+/* ===== PROMO WHEEL (NEXT ORDER ONLY) ===== */
+
+let wheelSpun = false;
+
+const wheelItems = [
+  "FREE SLAB",
+  "10% OFF",
+  "SHIP FREE",
+  "SLAB DEAL",
+  "FREE ORDER",
+  "NO DEAL"
+];
+
+const wheelDescriptions = {
+  "FREE SLAB": "You get a FREE SLAB on your next order (use code: FREE SLAB)",
+  "10% OFF": "You get 10% OFF your next order (max $100) (use code: 10% OFF)",
+  "SHIP FREE": "You get FREE SHIPPING on your next order (use code: SHIP FREE)",
+  "SLAB DEAL": "You get $5 OFF per slab (max $50) (use code: SLAB DEAL)",
+  "FREE ORDER": "You get up to $100 OFF your next order (use code: FREE ORDER)",
+  "NO DEAL": "No deal this time — try again next order!"
+};
+
+let canvas, ctx;
+let angle = 0;
+
+/* wait until DONE page exists */
+setTimeout(() => {
+  canvas = document.getElementById("promoWheel");
+  if (canvas) {
+    ctx = canvas.getContext("2d");
+    drawWheel();
+  }
+}, 300);
+
+function drawWheel() {
+  const center = 150;
+  const radius = 150;
+  const arc = (2 * Math.PI) / wheelItems.length;
+
+  const colors = [
+    "#0033a0",
+    "#d71920",
+    "#2ecc71",
+    "#f39c12",
+    "#9b59b6",
+    "#1abc9c"
+  ];
+
+  for (let i = 0; i < wheelItems.length; i++) {
+    const start = angle + i * arc;
+
+    ctx.beginPath();
+    ctx.fillStyle = colors[i];
+    ctx.moveTo(center, center);
+    ctx.arc(center, center, radius, start, start + arc);
+    ctx.fill();
+
+    ctx.save();
+    ctx.translate(center, center);
+    ctx.rotate(start + arc / 2);
+    ctx.fillStyle = "white";
+    ctx.font = "12px Arial";
+    ctx.textAlign = "right";
+    ctx.fillText(wheelItems[i], radius - 10, 5);
+    ctx.restore();
+  }
+}
+
+function spinWheel() {
+  if (wheelSpun) return;
+
+  wheelSpun = true;
+  document.getElementById("spinBtn").disabled = true;
+
+  let spins = 5 + Math.random() * 5;
+  let finalAngle = spins * 2 * Math.PI;
+
+  let duration = 3000;
+  let start = null;
+
+  function animate(timestamp) {
+    if (!start) start = timestamp;
+    let progress = timestamp - start;
+
+    let ease = 1 - Math.pow(1 - progress / duration, 3);
+
+    angle = finalAngle * ease;
+
+    ctx.clearRect(0, 0, 300, 300);
+    drawWheel();
+
+    if (progress < duration) {
+      requestAnimationFrame(animate);
+    } else {
+      finishSpin();
+    }
+  }
+
+  requestAnimationFrame(animate);
+}
+
+function finishSpin() {
+  const arc = (2 * Math.PI) / wheelItems.length;
+
+  let normalized = angle % (2 * Math.PI);
+  let index = Math.floor((wheelItems.length - (normalized / arc)) % wheelItems.length);
+
+  let prize = wheelItems[index];
+
+  document.getElementById("wheelResult").innerHTML =
+    `<div>You get: ${wheelDescriptions[prize]}</div>`;
 }
 /* ===== EMAILJS UPDATED COMPLETE ORDER ONLY ===== */
 function completeOrder(){
