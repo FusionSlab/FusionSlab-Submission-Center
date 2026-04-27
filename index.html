@@ -516,7 +516,7 @@ function buildFields(){
     fields = ["Year","Set","Character/Card Name","Card Number","Rarity","Finish/Edition"];
   }
   else if(selectedCardType === "Sports"){
-    fields = ["Year","Set","Player","Team","Card #","Variant"];
+    fields = ["Sport","Year","Set","Player","Team","Card #","Variant"];
   }
   else if(["Marvel","Star Wars"].includes(selectedCardType)){
     fields = ["Year","Set","Character/Scene","Card Number","Rarity"];
@@ -525,18 +525,67 @@ function buildFields(){
     fields = ["Year","Set","Card Name","Card #","Rarity","Edition"];
   }
   else if(selectedCardType === "Custom"){
-    fields = ["Year","Set","Card Name","Notes"];
+    fields = [
+      "Year",
+      "Set",
+      "Character/Player",
+      "Team",
+      "Card #",
+      "Variant",
+      "Edition",
+      "Finish",
+      "Brand"
+    ];
   }
+
+  // Always add Notes
+  fields.push("Notes");
 
   fieldOrder = fields;
   container.innerHTML = "";
 
   fields.forEach(f=>{
-    const label=document.createElement("label");
-    label.innerText=f;
+    const label = document.createElement("label");
+    label.innerText = f;
 
-    const input=document.createElement("input");
-    input.id="field_"+f.replace(/[^a-zA-Z0-9]/g,'');
+    let input;
+
+    // ✅ SPORTS DROPDOWN
+    if(f === "Sport"){
+      input = document.createElement("select");
+
+      [
+        "Baseball",
+        "Basketball",
+        "Football",
+        "Golf",
+        "Hockey",
+        "Racing",
+        "Soccer",
+        "Tennis",
+        "UFC",
+        "Wrestling",
+        "Boxing"
+      ].forEach(s=>{
+        let option = document.createElement("option");
+        option.value = s;
+        option.text = s;
+        input.appendChild(option);
+      });
+    }
+
+    // ✅ NOTES textarea
+    else if(f === "Notes"){
+      input = document.createElement("textarea");
+      input.rows = 3;
+    }
+
+    // default input
+    else{
+      input = document.createElement("input");
+    }
+
+    input.id = "field_" + f.replace(/[^a-zA-Z0-9]/g,'');
 
     container.appendChild(label);
     container.appendChild(input);
