@@ -404,8 +404,6 @@
 
 <!-- DONE -->
 <div class="step" id="donePage">
-  <h2>Done</h2>
-  <p>Submission Complete</p>
 <div style="display:flex; flex-direction:column; align-items:center; margin-top:20px;">
 
   <!-- wrapper so arrow can sit OUTSIDE the wheel -->
@@ -516,16 +514,15 @@ function buildFields(){
     fields = ["Year","Set","Character/Card Name","Card Number","Rarity","Finish/Edition"];
   }
   else if(selectedCardType === "Sports"){
-    fields = ["Year","Set","Player","Team","Card #","Variant"];
     fields = ["Sport","Year","Set","Player","Team","Card #","Variant"];
   }
   else if(["Marvel","Star Wars"].includes(selectedCardType)){
     fields = ["Year","Set","Character/Scene","Card Number","Rarity"];
-@@ -525,289 +525,338 @@
+  }
+  else if(selectedCardType === "YuGiOh"){
     fields = ["Year","Set","Card Name","Card #","Rarity","Edition"];
   }
   else if(selectedCardType === "Custom"){
-    fields = ["Year","Set","Card Name","Notes"];
     fields = [
       "Year",
       "Set",
@@ -546,8 +543,6 @@ function buildFields(){
   container.innerHTML = "";
 
   fields.forEach(f=>{
-    const label=document.createElement("label");
-    label.innerText=f;
     const label = document.createElement("label");
     label.innerText = f;
 
@@ -588,8 +583,6 @@ function buildFields(){
       input = document.createElement("input");
     }
 
-    const input=document.createElement("input");
-    input.id="field_"+f.replace(/[^a-zA-Z0-9]/g,'');
     input.id = "field_" + f.replace(/[^a-zA-Z0-9]/g,'');
 
     container.appendChild(label);
