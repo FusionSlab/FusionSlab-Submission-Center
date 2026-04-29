@@ -87,6 +87,8 @@
   <script>
     emailjs.init({ publicKey: "-rXlMZTTg7hton9TE" });
   </script>
+<!-- CONFETTI LIBRARY -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
 </head>
 
@@ -810,6 +812,26 @@ function finishSpin() {
 
   document.getElementById("wheelResult").innerHTML =
     `<div>You get: ${wheelDescriptions[prize]}</div>`;
+
+  /* ===== CONFETTI EFFECT ===== */
+  confetti({
+    particleCount: 180,
+    spread: 80,
+    origin: { y: 0.6 }
+  });
+
+  /* ===== CHANGE BUTTON INTO FINISH BUTTON ===== */
+  const btn = document.getElementById("spinBtn");
+
+  btn.innerText = "Finish Submission";
+  btn.disabled = false;
+
+  btn.style.background = "#0033a0";
+  btn.style.color = "white";
+
+  btn.onclick = () => {
+    show("accountPage"); // change this if you want a different final page
+  };
 }
 /* ===== EMAILJS UPDATED COMPLETE ORDER ONLY ===== */
 function completeOrder(){
