@@ -439,6 +439,30 @@ let service = "";
 let tier = "";
 let price = 0;
 let cards = [];
+const TAX_RULES = {
+  US: {
+    rates: {
+      "AL": 0.04, "AK": 0.00, "AZ": 0.056, "AR": 0.065,
+      "CA": 0.0725, "CO": 0.029, "CT": 0.0635, "DE": 0.00,
+      "FL": 0.06, "GA": 0.04, "HI": 0.04, "ID": 0.06,
+      "IL": 0.0625, "IN": 0.07, "IA": 0.06, "KS": 0.065,
+      "KY": 0.06, "LA": 0.0445, "ME": 0.055, "MD": 0.06,
+      "MA": 0.0625, "MI": 0.06, "MN": 0.06875, "MS": 0.07,
+      "MO": 0.04225, "MT": 0.00, "NE": 0.055, "NV": 0.0685,
+      "NH": 0.00, "NJ": 0.06625, "NM": 0.05125, "NY": 0.04,
+      "NC": 0.0475, "ND": 0.05, "OH": 0.0575, "OK": 0.045,
+      "OR": 0.00, "PA": 0.06, "RI": 0.07, "SC": 0.06,
+      "SD": 0.045, "TN": 0.07, "TX": 0.0625, "UT": 0.0485,
+      "VT": 0.06, "VA": 0.053, "WA": 0.065, "WV": 0.06,
+      "WI": 0.05, "WY": 0.04
+    }
+  },
+
+  CA: { rate: 0.05 },
+  UK: { rate: 0.20 },
+  EU: { rate: 0.21 },
+  OTHER: { rate: 0.07 }
+};
 
 let promoData = {
   code: "",
@@ -646,12 +670,41 @@ function updateFinal(){
 
   let shipping = promoData.freeShipping ? 0 : 14.99;
 
-  let total = subtotal - promoData.discount + shipping;
+  let taxRate = getTaxRate();
+
+let discounted = subtotal - promoData.discount;
+let tax = discounted * taxRate;
+
+let total = discounted + shipping + tax;
 
   document.getElementById("finalTotal").innerText =
     `Total: $${total.toFixed(2)}`;
 }
 
+function getTaxRate(){
+  let country = (document.getElementById("rCountry").value || "").toUpperCase().trim();
+  let region = (document.getElementById("rRegion").value || "").toUpperCase().trim();
+
+  if(country === "US" || country === "USA" || country === "UNITED STATES"){
+    return TAX_RULES.US.rates[region] ?? 0.07;
+  }
+
+  if(country === "CANADA" || country === "CA"){
+    return TAX_RULES.CA.rate;
+  }
+
+  if(country === "UK" || country === "UNITED KINGDOM" || country === "GB"){
+    return TAX_RULES.UK.rate;
+  }
+
+  const EU = ["FRANCE","GERMANY","SPAIN","ITALY","NETHERLANDS","BELGIUM","PORTUGAL","POLAND","SWEDEN","NORWAY","DENMARK","FINLAND","AUSTRIA","GREECE","IRELAND"];
+
+  if(EU.includes(country)){
+    return TAX_RULES.EU.rate;
+  }
+
+  return TAX_RULES.OTHER.rate;
+}
 function applyPromo(){
   let code = document.getElementById("promo").value.trim().toUpperCase();
   let message = document.getElementById("promoMessage");
@@ -838,7 +891,12 @@ function completeOrder(){
 
 let subtotal = cards.reduce((s,c)=>s+Number(c.price),0);
 let shipping = promoData.freeShipping ? 0 : 14.99;
-let total = subtotal - promoData.discount + shipping;
+let taxRate = getTaxRate();
+
+let discounted = subtotal - promoData.discount;
+let tax = discounted * taxRate;
+
+let total = discounted + shipping + tax;
 
   const now = new Date();
 
@@ -861,6 +919,8 @@ let reviewText = cards.map((c,i)=>{
     subtotal: subtotal.toFixed(2),
     shipping: (promoData.freeShipping ? "0.00" : "14.99"),
     total: total.toFixed(2),
+	tax: tax.toFixed(2),
+	taxRate: (taxRate * 100).toFixed(2) + "%",
 
     promo: document.getElementById("promo").value || "NONE",
     timestamp: now.toISOString()
