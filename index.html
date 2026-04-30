@@ -887,62 +887,80 @@ function finishSpin() {
 };
 }
 /* ===== EMAILJS UPDATED COMPLETE ORDER ONLY ===== */
-function completeOrder(){
+function completeOrder() {
 
-let subtotal = cards.reduce((s,c)=>s+Number(c.price),0);
-let shipping = promoData.freeShipping ? 0 : 14.99;
-let taxRate = getTaxRate();
+  let subtotal = cards.reduce((s,c)=>s+Number(c.price),0);
+  let shipping = promoData.freeShipping ? 0 : 14.99;
+  let taxRate = getTaxRate();
 
-let discounted = subtotal - promoData.discount;
-let tax = discounted * taxRate;
-
-let total = discounted + shipping + tax;
+  let discounted = subtotal - promoData.discount;
+  let tax = discounted * taxRate;
+  let total = discounted + shipping + tax;
 
   const now = new Date();
 
-let reviewText = cards.map((c,i)=>{
-  return `Card ${i+1}\n` +
-    Object.entries(c).map(([k,v])=>`${formatKey(k)}: ${v}`).join("\n");
-}).join("\n\n----------------\n\n");
+  let reviewText = cards.map((c,i)=>{
+    return `Card ${i+1}\n` +
+      Object.entries(c).map(([k,v])=>`${formatKey(k)}: ${v}`).join("\n");
+  }).join("\n\n----------------\n\n");
 
   const params = {
     name: document.getElementById("name").value || "",
     email: document.getElementById("email").value || "",
-
     address: document.getElementById("rAddress").value || "",
     city: document.getElementById("rCity").value || "",
     state: document.getElementById("rRegion").value || "",
     country: document.getElementById("rCountry").value || "",
-
     cardDetails: reviewText,
-
     subtotal: subtotal.toFixed(2),
-    shipping: (promoData.freeShipping ? "0.00" : "14.99"),
+    shipping: shipping.toFixed(2),
     total: total.toFixed(2),
-	tax: tax.toFixed(2),
-	taxRate: (taxRate * 100).toFixed(2) + "%",
-
+    tax: tax.toFixed(2),
+    taxRate: (taxRate * 100).toFixed(2) + "%",
     promo: document.getElementById("promo").value || "NONE",
     timestamp: now.toISOString()
   };
 
   emailjs.send("service_vxuhfls", "template_ygmor47", params)
-    .then(() => {
-  confetti({
-    particleCount: 200,
-    spread: 90,
-    origin: { y: 0.6 }
-  });
+    .then((res1) => {
 
-  setTimeout(() => {
-    show("donePage");
-  }, 800);
-})
+      console.log("Email #1 success:", res1);
+
+      const receiptParams = {
+        email: params.email,
+        code: params.promo,
+        promoDetails: "Promo applied", // FIXED (no missing function)
+        cardDetails: reviewText,
+        total: total.toFixed(2)
+      };
+
+      return emailjs.send(
+        "service_vxuhfls",
+        "template_r1iassl",
+        receiptParams
+      );
+    })
+    .then((res2) => {
+
+      console.log("Email #2 success:", res2);
+
+      confetti({
+        particleCount: 200,
+        spread: 90,
+        origin: { y: 0.6 }
+      });
+
+      setTimeout(() => {
+        show("donePage");
+      }, 800);
+
+    })
     .catch((err) => {
-      console.error(err);
-      alert("Email failed to send.");
+      console.error("EMAIL ERROR:", err);
+      alert("Email failed to send. Check console.");
     });
 }
+  
 </script>
 
 </body>
