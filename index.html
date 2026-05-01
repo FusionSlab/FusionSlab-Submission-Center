@@ -863,6 +863,8 @@ function finishSpin() {
 
   let prize = wheelItems[index];
 
+promoData.code = prize; // ✅ STORE RESULT
+
   document.getElementById("wheelResult").innerHTML =
     `<div>You get: ${wheelDescriptions[prize]}</div>`;
 
@@ -885,6 +887,14 @@ function finishSpin() {
   btn.onclick = () => {
   completeOrder();
 };
+}
+function getPromoBenefit(code) {
+  if (code === "FREE SLAB") return "Free slab applied";
+  if (code === "10% OFF") return "10% discount (max $100)";
+  if (code === "SHIP FREE") return "Free shipping applied";
+  if (code === "SLAB DEAL") return "$5 per slab discount (max $50)";
+  if (code === "FREE ORDER") return "Up to $100 off applied";
+  return "No benefit applied";
 }
 /* ===== EMAILJS UPDATED COMPLETE ORDER ONLY ===== */
 function completeOrder() {
@@ -927,12 +937,12 @@ function completeOrder() {
       console.log("Email #1 success:", res1);
 
       const receiptParams = {
-        email: params.email,
-        code: params.promo,
-        promoDetails: "Promo applied", // FIXED (no missing function)
-        cardDetails: reviewText,
-        total: total.toFixed(2)
-      };
+  email: params.email,
+  code: params.promo,
+  promoDetails: wheelDescriptions[promoData.code] || "No benefit",
+  cardDetails: reviewText,
+  total: total.toFixed(2)
+};
 
       return emailjs.send(
         "service_vxuhfls",
