@@ -166,7 +166,48 @@ button:hover {
     Login
   </button>
 
-  <button type="button">
+  <button type="button" onclick="showSignup()">
+  Sign Up
+</button>
+
+</div>
+
+<div id="signupBox" style="
+  display:none;
+  position:fixed;
+  top:80px;
+  right:20px;
+  width:300px;
+  background:white;
+  color:black;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 0 15px rgba(0,0,0,0.2);
+  z-index:9999;
+">
+
+  <h3 style="margin-top:0;">Sign Up</h3>
+
+  <input type="text" placeholder="Name" style="margin-bottom:10px;">
+
+  <input type="email" placeholder="Email" style="margin-bottom:10px;">
+
+  <input type="password" placeholder="Password" style="margin-bottom:15px;">
+
+ <label style="
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:14px;
+  margin-bottom:15px;
+  flex-direction:row-reverse;
+  justify-content:flex-end;
+">
+  <input type="checkbox" style="width:auto;">
+  <span>I Agree To FusionSlab's Terms & Conditions</span>
+</label>
+
+  <button type="button" style="width:100%;">
     Sign Up
   </button>
 
@@ -519,8 +560,23 @@ button:hover {
 
 </div>
 <script>
+
 function goHome() {
   window.location.href = "https://fusionslab.github.io/FusionSlab/";
+}
+
+function showSignup() {
+  const box = document.getElementById("signupBox");
+
+  if (!box) return;
+
+  const isHidden = getComputedStyle(box).display === "none";
+
+  if (isHidden) {
+    box.style.display = "block"; // 👈 IMPORTANT FIX
+  } else {
+    box.style.display = "none";
+  }
 }
 
 let service = "";
