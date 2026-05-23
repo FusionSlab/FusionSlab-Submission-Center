@@ -162,9 +162,9 @@ button:hover {
 
  <div class="header-right" style="display:flex; gap:10px;">
 
-  <button type="button">
-    Login
-  </button>
+  <button type="button" onclick="showLogin()">
+  Login
+</button>
 
   <button type="button" onclick="showSignup()">
   Sign Up
@@ -209,6 +209,30 @@ button:hover {
     Sign Up
   </button>
 
+</div>
+
+<div id="loginBox" style="
+  display:none;
+  position:fixed;
+  top:80px;
+  right:20px;
+  width:300px;
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 0 15px rgba(0,0,0,0.2);
+  z-index:9999;
+  color:black;
+">
+  <h3 style="margin-top:0;">Login</h3>
+
+  <input type="text" placeholder="Name" style="margin-bottom:10px;">
+  <input type="email" placeholder="Email" style="margin-bottom:10px;">
+  <input type="password" placeholder="Password" style="margin-bottom:15px;">
+
+  <button type="button" style="width:100%;">
+    Login
+  </button>
 </div>
 
 </div>
@@ -575,6 +599,16 @@ function showSignup() {
   } else {
     box.style.display = "none";
   }
+}
+
+function showLogin() {
+  const box = document.getElementById("loginBox");
+
+  if (!box) return;
+
+  const isHidden = getComputedStyle(box).display === "none";
+
+  box.style.display = isHidden ? "block" : "none";
 }
 
 let service = "";
