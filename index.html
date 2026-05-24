@@ -258,8 +258,21 @@ button:hover {
 
 <div class="container">
 
+<!-- START SUBMISSION PAGE -->
+<div class="step active" id="startPage">
+  <h2>Start Submission</h2>
+
+  <p style="margin-bottom:15px;">
+    Welcome to FusionSlab Submission Center. Start a new submission below.
+  </p>
+
+  <button onclick="show('accountPage')" style="width:100%; margin-top:20px;">
+    Start New Submission
+  </button>
+</div>
+
 <!-- ACCOUNT -->
-<div class="step active" id="accountPage">
+<div class="step" id="accountPage">
   <h2>Account</h2>
   <input id="name" placeholder="Name">
   <input id="email" placeholder="Email">
@@ -601,6 +614,14 @@ button:hover {
 
 </div>
 <script>
+
+function showStep(id){
+  document.querySelectorAll(".step").forEach(s => {
+    s.classList.remove("active");
+  });
+
+  document.getElementById(id).classList.add("active");
+}
 
 function goHome() {
   window.location.href = "https://fusionslab.github.io/FusionSlab/";
