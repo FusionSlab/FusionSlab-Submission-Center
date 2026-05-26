@@ -162,19 +162,11 @@ button:hover {
 
  <div class="header-right" style="display:flex; gap:10px;">
 
-  <button
-  type="button"
-  style="width:100%;"
-  onclick="firebaseLogin()"
->
+  <button type="button" onclick="showLogin()">
   Login
 </button>
 
-  <button
-  type="button"
-  style="width:100%;"
-  onclick="firebaseSignup()"
->
+  <button type="button" onclick="showSignup()">
   Sign Up
 </button>
 
@@ -217,16 +209,12 @@ button:hover {
     Sign Up
   </button>
 
-<button
-  type="button"
-  onclick="firebaseDeleteAccount()"
-  style="
-    width:100%;
-    margin-top:10px;
-    background:#ff4d4d;
-    color:white;
-  "
->
+<button type="button" style="
+  width:100%;
+  margin-top:10px;
+  background:#ff4d4d;
+  color:white;
+">
   Delete Account
 </button>
 
@@ -255,16 +243,12 @@ button:hover {
     Login
   </button>
 
-<button
-  type="button"
-  onclick="firebaseLogout()"
-  style="
-    width:100%;
-    margin-top:10px;
-    background:#666;
-    color:white;
-  "
->
+<button type="button" style="
+  width:100%;
+  margin-top:10px;
+  background:#666;
+  color:white;
+">
   Logout
 </button>
 
@@ -630,192 +614,6 @@ button:hover {
 
 </div>
 <script>
-
-<!-- FIREBASE -->
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  deleteUser,
-  updateProfile,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-/* =========================
-   FIREBASE CONFIG
-========================= */
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBQI4-OSY401huYVP1n2uCejvcmUsrA7HA",
-  authDomain: "fusionslab-accounts.firebaseapp.com",
-  databaseURL: "https://fusionslab-accounts-default-rtdb.firebaseio.com",
-  projectId: "fusionslab-accounts",
-  storageBucket: "fusionslab-accounts.firebasestorage.app",
-  messagingSenderId: "1039705548493",
-  appId: "1:1039705548493:web:4854e3391eeb8ff6adab84",
-  measurementId: "G-4H1ZED4KSR"
-};
-
-/* =========================
-   INIT FIREBASE
-========================= */
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-/* =========================
-   SIGN UP
-========================= */
-
-window.firebaseSignup = async function () {
-
-  const name =
-    document.querySelector("#signupBox input[type='text']").value;
-
-  const email =
-    document.querySelector("#signupBox input[type='email']").value;
-
-  const password =
-    document.querySelector("#signupBox input[type='password']").value;
-
-  const terms =
-    document.querySelector("#signupBox input[type='checkbox']").checked;
-
-  if (!terms) {
-    alert("You must agree to the terms.");
-    return;
-  }
-
-  try {
-
-    const userCredential =
-      await createUserWithEmailAndPassword(auth, email, password);
-
-    await updateProfile(userCredential.user, {
-      displayName: name
-    });
-
-    alert("Account created successfully!");
-
-    document.getElementById("signupBox").style.display = "none";
-
-  } catch (error) {
-
-    alert(error.message);
-
-  }
-};
-
-/* =========================
-   LOGIN
-========================= */
-
-window.firebaseLogin = async function () {
-
-  const email =
-    document.querySelector("#loginBox input[type='email']").value;
-
-  const password =
-    document.querySelector("#loginBox input[type='password']").value;
-
-  try {
-
-    await signInWithEmailAndPassword(auth, email, password);
-
-    alert("Logged in successfully!");
-
-    document.getElementById("loginBox").style.display = "none";
-
-  } catch (error) {
-
-    alert(error.message);
-
-  }
-};
-
-/* =========================
-   LOGOUT
-========================= */
-
-window.firebaseLogout = async function () {
-
-  try {
-
-    await signOut(auth);
-
-    alert("Logged out!");
-
-  } catch (error) {
-
-    alert(error.message);
-
-  }
-};
-
-/* =========================
-   DELETE ACCOUNT
-========================= */
-
-window.firebaseDeleteAccount = async function () {
-
-  const user = auth.currentUser;
-
-  if (!user) {
-    alert("No user logged in.");
-    return;
-  }
-
-  const confirmDelete =
-    confirm("Delete your FusionSlab account permanently?");
-
-  if (!confirmDelete) return;
-
-  try {
-
-    await deleteUser(user);
-
-    alert("Account deleted.");
-
-  } catch (error) {
-
-    alert(error.message);
-
-  }
-};
-
-/* =========================
-   AUTO FILL ACCOUNT PAGE
-========================= */
-
-onAuthStateChanged(auth, (user) => {
-
-  if (user) {
-
-    const nameInput = document.getElementById("name");
-    const emailInput = document.getElementById("email");
-
-    if (nameInput) {
-      nameInput.value = user.displayName || "";
-    }
-
-    if (emailInput) {
-      emailInput.value = user.email || "";
-    }
-
-    console.log("Logged in:", user.email);
-
-  } else {
-
-    console.log("No user logged in.");
-
-  }
-
-});
 
 function showStep(id){
   document.querySelectorAll(".step").forEach(s => {
