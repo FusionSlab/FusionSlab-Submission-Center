@@ -615,6 +615,78 @@ button:hover {
 </div>
 <script>
 
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+  getFirestore,
+  setDoc,
+  doc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyBQI4-OSY401huYVP1n2uCejvcmUsrA7HA",
+  authDomain: "fusionslab-accounts.firebaseapp.com",
+  projectId: "fusionslab-accounts",
+  storageBucket: "fusionslab-accounts.appspot.com",
+  messagingSenderId: "1039705548493",
+  appId: "1:1039705548493:web:4854e3391eeb8ff6adab84"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let mode = "login"; // login or signup
+
+// switch mode
+window.showLogin = () => {
+  mode = "login";
+  document.getElementById("loginBox").style.display = "block";
+  document.getElementById("signupBox").style.display = "none";
+};
+
+window.showSignup = () => {
+  mode = "signup";
+  document.getElementById("signupBox").style.display = "block";
+  document.getElementById("loginBox").style.display = "none";
+};
+
+// MAIN AUTH FUNCTION (THIS IS THE ONLY IMPORTANT PART)
+window.loginUser = async () => {
+  const email = document.querySelector("#loginBox input[type='email']").value;
+  const password = document.querySelector("#loginBox input[type='password']").value;
+
+  try {
+    let userCred;
+
+    if (mode === "signup") {
+      userCred = await createUserWithEmailAndPassword(auth, email, password);
+    } else {
+      userCred = await signInWithEmailAndPassword(auth, email, password);
+    }
+
+    // SAVE USER TO DATABASE (THIS IS WHAT YOU WANTED)
+    await setDoc(doc(db, "users", userCred.user.uid), {
+      email: userCred.user.email,
+      lastLogin: new Date().toISOString()
+    });
+
+    alert("Success!");
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("signupBox").style.display = "none";
+
+  } catch (err) {
+    alert(err.message);
+  }
+};
+
 function showStep(id){
   document.querySelectorAll(".step").forEach(s => {
     s.classList.remove("active");
