@@ -682,6 +682,12 @@ async function signupUser(){
   } catch (err) {
     console.error(err);
     alert("Signup failed: " + err.message);
+
+    window.goHome = goHome;
+    window.showLogin = showLogin;
+    window.showSignup = showSignup;
+    window.loginUser = loginUser;
+    window.signupUser = signupUser;
   }
 }
 
