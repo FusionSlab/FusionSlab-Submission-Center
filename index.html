@@ -613,7 +613,6 @@ button:hover {
   <div id="wheelResult" style="margin-top:15px; font-weight:bold;"></div>
 
 </div>
-<script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -686,6 +685,8 @@ window.loginUser = async () => {
     alert(err.message);
   }
 };
+
+<script>
 
 function showStep(id){
   document.querySelectorAll(".step").forEach(s => {
