@@ -622,25 +622,29 @@ button:hover {
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "XXXX",
-    appId: "XXXX"
+    apiKey: "AIzaSyBQI4-OSY401huYVP1n2uCejvcmUsrA7HA",
+    authDomain: "fusionslab-accounts.firebaseapp.com",
+    projectId: "fusionslab-accounts",
+    storageBucket: "fusionslab-accounts.appspot.com",
+    messagingSenderId: "1039705548493",
+    appId: "1:1039705548493:web:4854e3391eeb8ff6adab84",
+    measurementId: "G-4H1ZED4KSR"
   };
 
+  // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // expose globally so your buttons can use it
+  // Make Firebase available to your normal script (IMPORTANT FIX)
   window.firebaseAuth = auth;
   window.firebaseDB = db;
   window.firebaseCreateUser = createUserWithEmailAndPassword;
   window.firebaseLoginUser = signInWithEmailAndPassword;
   window.firebaseSetDoc = setDoc;
   window.firebaseDoc = doc;
+
+  console.log("Firebase connected ✔");
 </script>
 
 function showStep(id){
