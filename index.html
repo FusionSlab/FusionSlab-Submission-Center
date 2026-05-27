@@ -615,18 +615,6 @@ button:hover {
 </div>
 <script>
 
-function showStep(id){
-  document.querySelectorAll(".step").forEach(s => {
-    s.classList.remove("active");
-  });
-
-  document.getElementById(id).classList.add("active");
-}
-
-function goHome() {
-  window.location.href = "https://fusionslab.github.io/FusionSlab/";
-}
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 import {
@@ -731,6 +719,18 @@ onAuthStateChanged(auth, async (user) => {
     });
   }
 });
+
+function showStep(id){
+  document.querySelectorAll(".step").forEach(s => {
+    s.classList.remove("active");
+  });
+
+  document.getElementById(id).classList.add("active");
+}
+
+function goHome() {
+  window.location.href = "https://fusionslab.github.io/FusionSlab/";
+}
 
 let service = "";
 let tier = "";
