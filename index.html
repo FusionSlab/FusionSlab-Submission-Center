@@ -659,8 +659,18 @@ window.showSignup = () => {
 
 // MAIN AUTH FUNCTION (THIS IS THE ONLY IMPORTANT PART)
 window.loginUser = async () => {
-  const email = document.querySelector("#loginBox input[type='email']").value;
-  const password = document.querySelector("#loginBox input[type='password']").value;
+  let email, password;
+
+  if (mode === "signup") {
+    email = document.querySelector("#signupBox input[type='email']").value;
+    password = document.querySelector("#signupBox input[type='password']").value;
+  } else {
+    email = document.querySelector("#loginBox input[type='email']").value;
+    password = document.querySelector("#loginBox input[type='password']").value;
+  }
+
+  email = email.trim();
+  password = password.trim();
 
   try {
     let userCred;
@@ -671,7 +681,6 @@ window.loginUser = async () => {
       userCred = await signInWithEmailAndPassword(auth, email, password);
     }
 
-    // SAVE USER TO DATABASE (THIS IS WHAT YOU WANTED)
     await setDoc(doc(db, "users", userCred.user.uid), {
       email: userCred.user.email,
       lastLogin: new Date().toISOString()
