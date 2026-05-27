@@ -205,9 +205,9 @@ button:hover {
   <span>I Agree To FusionSlab's Terms</span>
 </label>
 
-  <button type="button" style="width:100%;" onclick="signUp()">
-  Sign Up
-</button>
+  <button type="button" style="width:100%;">
+    Sign Up
+  </button>
 
 <button type="button" style="
   width:100%;
@@ -239,9 +239,9 @@ button:hover {
   <input type="email" placeholder="Email" style="margin-bottom:10px;">
   <input type="password" placeholder="Password" style="margin-bottom:15px;">
 
-  <button type="button" style="width:100%;" onclick="login()">
-  Login
-</button>
+  <button type="button" style="width:100%;">
+    Login
+  </button>
 
 <button type="button" style="
   width:100%;
@@ -613,111 +613,7 @@ button:hover {
   <div id="wheelResult" style="margin-top:15px; font-weight:bold;"></div>
 
 </div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-
-import {
-  getDatabase,
-  ref,
-  set,
-  get
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
-
-/* Firebase Config */
-const firebaseConfig = {
-  apiKey: "AIzaSyBQI4-OSY401huYVP1n2uCejvcmUsrA7HA",
-  authDomain: "fusionslab-accounts.firebaseapp.com",
-  databaseURL: "https://fusionslab-accounts-default-rtdb.firebaseio.com",
-  projectId: "fusionslab-accounts",
-  appId: "1:1039705548493:web:4854e3391eeb8ff6adab84"
-};
-
-/* Init */
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getDatabase(app);
-
-/* GLOBAL ACCESS (IMPORTANT) */
-window.auth = auth;
-window.db = db;
-window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
-window.signInWithEmailAndPassword = signInWithEmailAndPassword;
-window.onAuthStateChanged = onAuthStateChanged;
-window.ref = ref;
-window.set = set;
-window.get = get;
-
-/* ALSO FIX YOUR BUTTON FUNCTIONS */
-function showSignup() {
-  const box = document.getElementById("signupBox");
-  box.style.display = (box.style.display === "block") ? "none" : "block";
-}
-
-function showLogin() {
-  const box = document.getElementById("loginBox");
-  box.style.display = (box.style.display === "block") ? "none" : "block";
-}
-
-/* EXPOSE THEM (THIS IS REQUIRED) */
-window.showSignup = showSignup;
-window.showLogin = showLogin;
-
-/* SIGN UP */
-window.signUp = async () => {
-  const email = document.querySelector("#signupBox input[type='email']").value;
-  const pass = document.querySelector("#signupBox input[type='password']").value;
-  const name = document.querySelector("#signupBox input[type='text']").value;
-
-  try {
-    const cred = await createUserWithEmailAndPassword(auth, email, pass);
-
-    await set(ref(db, "users/" + cred.user.uid), {
-      email,
-      name: name || "",
-      promocodes: [],
-      collection: []
-    });
-
-    alert("Account created!");
-  } catch (e) {
-    alert(e.message);
-  }
-};
-
-/* LOGIN */
-window.login = async () => {
-  const email = document.querySelector("#loginBox input[type='email']").value;
-  const pass = document.querySelector("#loginBox input[type='password']").value;
-
-  try {
-    await signInWithEmailAndPassword(auth, email, pass);
-    alert("Logged in!");
-  } catch (e) {
-    alert(e.message);
-  }
-};
-
-onAuthStateChanged(auth, async (user) => {
-  if (!user) return;
-
-  const userRef = ref(db, "users/" + user.uid);
-  const snap = await get(userRef);
-
-  if (!snap.exists()) {
-    await set(userRef, {
-      email: user.email,
-      promocodes: [],
-      collection: []
-    });
-  }
-});
+<script>
 
 function showStep(id){
   document.querySelectorAll(".step").forEach(s => {
@@ -729,6 +625,30 @@ function showStep(id){
 
 function goHome() {
   window.location.href = "https://fusionslab.github.io/FusionSlab/";
+}
+
+function showSignup() {
+  const box = document.getElementById("signupBox");
+
+  if (!box) return;
+
+  const isHidden = getComputedStyle(box).display === "none";
+
+  if (isHidden) {
+    box.style.display = "block"; // 👈 IMPORTANT FIX
+  } else {
+    box.style.display = "none";
+  }
+}
+
+function showLogin() {
+  const box = document.getElementById("loginBox");
+
+  if (!box) return;
+
+  const isHidden = getComputedStyle(box).display === "none";
+
+  box.style.display = isHidden ? "block" : "none";
 }
 
 let service = "";
