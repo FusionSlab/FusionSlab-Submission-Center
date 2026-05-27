@@ -631,21 +631,16 @@ button:hover {
     measurementId: "G-4H1ZED4KSR"
   };
 
-  // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // Make Firebase available to your normal script (IMPORTANT FIX)
   window.firebaseAuth = auth;
   window.firebaseDB = db;
   window.firebaseCreateUser = createUserWithEmailAndPassword;
   window.firebaseLoginUser = signInWithEmailAndPassword;
   window.firebaseSetDoc = setDoc;
   window.firebaseDoc = doc;
-
-  console.log("Firebase connected ✔");
-</script>
 
 function showStep(id){
   document.querySelectorAll(".step").forEach(s => {
