@@ -205,9 +205,9 @@ button:hover {
   <span>I Agree To FusionSlab's Terms</span>
 </label>
 
-  <button type="button" onclick="signupUser()" style="width:100%;">
-  Sign Up
-</button>
+  <button type="button" style="width:100%;">
+    Sign Up
+  </button>
 
 <button type="button" style="
   width:100%;
@@ -239,9 +239,9 @@ button:hover {
   <input type="email" placeholder="Email" style="margin-bottom:10px;">
   <input type="password" placeholder="Password" style="margin-bottom:15px;">
 
-  <button type="button" onclick="loginUser()" style="width:100%;">
-  Login
-</button>
+  <button type="button" style="width:100%;">
+    Login
+  </button>
 
 <button type="button" style="
   width:100%;
@@ -613,34 +613,7 @@ button:hover {
   <div id="wheelResult" style="margin-top:15px; font-weight:bold;"></div>
 
 </div>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } 
-    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, setDoc, doc } 
-    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyBQI4-OSY401huYVP1n2uCejvcmUsrA7HA",
-    authDomain: "fusionslab-accounts.firebaseapp.com",
-    projectId: "fusionslab-accounts",
-    storageBucket: "fusionslab-accounts.appspot.com",
-    messagingSenderId: "1039705548493",
-    appId: "1:1039705548493:web:4854e3391eeb8ff6adab84",
-    measurementId: "G-4H1ZED4KSR"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  window.firebaseAuth = auth;
-  window.firebaseDB = db;
-  window.firebaseCreateUser = createUserWithEmailAndPassword;
-  window.firebaseLoginUser = signInWithEmailAndPassword;
-  window.firebaseSetDoc = setDoc;
-  window.firebaseDoc = doc;
+<script>
 
 function showStep(id){
   document.querySelectorAll(".step").forEach(s => {
@@ -654,43 +627,6 @@ function goHome() {
   window.location.href = "https://fusionslab.github.io/FusionSlab/";
 }
 
-async function signupUser(){
-  const name = document.querySelector("#signupBox input[type='text']").value;
-  const email = document.querySelector("#signupBox input[type='email']").value;
-  const password = document.querySelector("#signupBox input[type='password']").value;
-
-  try {
-    const userCred = await window.firebaseCreateUser(
-      window.firebaseAuth,
-      email,
-      password
-    );
-
-    // Save user to database
-    await window.firebaseSetDoc(
-      window.firebaseDoc(window.firebaseDB, "users", userCred.user.uid),
-      {
-        name,
-        email,
-        createdAt: new Date().toISOString()
-      }
-    );
-
-    alert("Account created!");
-    document.getElementById("signupBox").style.display = "none";
-
-  } catch (err) {
-    console.error(err);
-    alert("Signup failed: " + err.message);
-
-    window.goHome = goHome;
-    window.showLogin = showLogin;
-    window.showSignup = showSignup;
-    window.loginUser = loginUser;
-    window.signupUser = signupUser;
-  }
-}
-
 function showSignup() {
   const box = document.getElementById("signupBox");
 
@@ -702,19 +638,6 @@ function showSignup() {
     box.style.display = "block"; // 👈 IMPORTANT FIX
   } else {
     box.style.display = "none";
-  }
-}
-
-async function loginUser(){
-  const email = document.querySelector("#loginBox input[type='email']").value;
-  const password = document.querySelector("#loginBox input[type='password']").value;
-
-  try {
-    await window.firebaseLoginUser(window.firebaseAuth, email, password);
-    alert("Logged in!");
-    document.getElementById("loginBox").style.display = "none";
-  } catch (err) {
-    alert("Login failed: " + err.message);
   }
 }
 
