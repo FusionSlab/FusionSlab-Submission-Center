@@ -205,9 +205,9 @@ button:hover {
   <span>I Agree To FusionSlab's Terms</span>
 </label>
 
-  <button type="button" style="width:100%;">
-    Sign Up
-  </button>
+  <button type="button" style="width:100%;" onclick="signUp()">
+  Sign Up
+</button>
 
 <button type="button" style="
   width:100%;
@@ -239,9 +239,9 @@ button:hover {
   <input type="email" placeholder="Email" style="margin-bottom:10px;">
   <input type="password" placeholder="Password" style="margin-bottom:15px;">
 
-  <button type="button" style="width:100%;">
-    Login
-  </button>
+  <button type="button" style="width:100%;" onclick="login()">
+  Login
+</button>
 
 <button type="button" style="
   width:100%;
@@ -641,6 +641,28 @@ function showSignup() {
   }
 }
 
+window.signUp = async () => {
+  const email = document.querySelector("#signupBox input[type='email']").value;
+  const pass = document.querySelector("#signupBox input[type='password']").value;
+  const name = document.querySelector("#signupBox input[type='text']").value;
+
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+
+    // 🔥 THIS is what gets ADDED to database
+    await set(ref(db, "users/" + cred.user.uid), {
+      email: email,
+      name: name || "",
+      promocodes: [],
+      collection: []
+    });
+
+    alert("Account created!");
+  } catch (e) {
+    alert(e.message);
+  }
+};
+ 
 function showLogin() {
   const box = document.getElementById("loginBox");
 
@@ -650,6 +672,33 @@ function showLogin() {
 
   box.style.display = isHidden ? "block" : "none";
 }
+
+window.login = async () => {
+  const email = document.querySelector("#loginBox input[type='email']").value;
+  const pass = document.querySelector("#loginBox input[type='password']").value;
+
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+    alert("Logged in!");
+  } catch (e) {
+    alert(e.message);
+  }
+};
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return;
+
+  const userRef = ref(db, "users/" + user.uid);
+  const snap = await get(userRef);
+
+  if (!snap.exists()) {
+    await set(userRef, {
+      email: user.email,
+      promocodes: [],
+      collection: []
+    });
+  }
+});
 
 let service = "";
 let tier = "";
