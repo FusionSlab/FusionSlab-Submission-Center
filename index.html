@@ -627,6 +627,38 @@ function goHome() {
   window.location.href = "https://fusionslab.github.io/FusionSlab/";
 }
 
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } 
+from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+import { getDatabase, ref, set, get } 
+from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+
+/* YOUR FIREBASE CONFIG */
+const firebaseConfig = {
+  apiKey: "AIzaSyBQI4-OSY401huYVP1n2uCejvcmUsrA7HA",
+  authDomain: "fusionslab-accounts.firebaseapp.com",
+  databaseURL: "https://fusionslab-accounts-default-rtdb.firebaseio.com",
+  projectId: "fusionslab-accounts",
+  appId: "1:1039705548493:web:4854e3391eeb8ff6adab84"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+/* EXPOSE FOR YOUR OLD FUNCTIONS */
+window.auth = auth;
+window.db = db;
+window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+window.onAuthStateChanged = onAuthStateChanged;
+window.ref = ref;
+window.set = set;
+window.get = get;
+</script>
+
 function showSignup() {
   const box = document.getElementById("signupBox");
 
