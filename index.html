@@ -629,13 +629,21 @@ function goHome() {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } 
-from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
-import { getDatabase, ref, set, get } 
-from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+import {
+  getDatabase,
+  ref,
+  set,
+  get
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
 
-/* YOUR FIREBASE CONFIG */
+/* Firebase Config */
 const firebaseConfig = {
   apiKey: "AIzaSyBQI4-OSY401huYVP1n2uCejvcmUsrA7HA",
   authDomain: "fusionslab-accounts.firebaseapp.com",
@@ -644,11 +652,12 @@ const firebaseConfig = {
   appId: "1:1039705548493:web:4854e3391eeb8ff6adab84"
 };
 
+/* Init */
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-/* EXPOSE FOR YOUR OLD FUNCTIONS */
+/* GLOBAL ACCESS (IMPORTANT) */
 window.auth = auth;
 window.db = db;
 window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
@@ -658,20 +667,22 @@ window.ref = ref;
 window.set = set;
 window.get = get;
 
+/* ALSO FIX YOUR BUTTON FUNCTIONS */
 function showSignup() {
   const box = document.getElementById("signupBox");
-
-  if (!box) return;
-
-  const isHidden = getComputedStyle(box).display === "none";
-
-  if (isHidden) {
-    box.style.display = "block"; // 👈 IMPORTANT FIX
-  } else {
-    box.style.display = "none";
-  }
+  box.style.display = (box.style.display === "block") ? "none" : "block";
 }
 
+function showLogin() {
+  const box = document.getElementById("loginBox");
+  box.style.display = (box.style.display === "block") ? "none" : "block";
+}
+
+/* EXPOSE THEM (THIS IS REQUIRED) */
+window.showSignup = showSignup;
+window.showLogin = showLogin;
+
+/* SIGN UP */
 window.signUp = async () => {
   const email = document.querySelector("#signupBox input[type='email']").value;
   const pass = document.querySelector("#signupBox input[type='password']").value;
@@ -680,9 +691,8 @@ window.signUp = async () => {
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, pass);
 
-    // 🔥 THIS is what gets ADDED to database
     await set(ref(db, "users/" + cred.user.uid), {
-      email: email,
+      email,
       name: name || "",
       promocodes: [],
       collection: []
@@ -693,17 +703,8 @@ window.signUp = async () => {
     alert(e.message);
   }
 };
- 
-function showLogin() {
-  const box = document.getElementById("loginBox");
 
-  if (!box) return;
-
-  const isHidden = getComputedStyle(box).display === "none";
-
-  box.style.display = isHidden ? "block" : "none";
-}
-
+/* LOGIN */
 window.login = async () => {
   const email = document.querySelector("#loginBox input[type='email']").value;
   const pass = document.querySelector("#loginBox input[type='password']").value;
