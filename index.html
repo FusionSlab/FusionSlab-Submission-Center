@@ -188,11 +188,9 @@ button:hover {
 
   <h3 style="margin-top:0;">Sign Up</h3>
 
-  <input type="text" placeholder="Name" style="margin-bottom:10px;">
-
-  <input type="email" placeholder="Email" style="margin-bottom:10px;">
-
-  <input type="password" placeholder="Password" style="margin-bottom:15px;">
+<input id="signupName" type="text" placeholder="Name" style="margin-bottom:10px;">
+<input id="signupEmail" type="email" placeholder="Email" style="margin-bottom:10px;">
+<input id="signupPassword" type="password" placeholder="Password" style="margin-bottom:15px;">
 
  <label style="
   display:flex;
@@ -205,11 +203,11 @@ button:hover {
   <span>I Agree To FusionSlab's Terms</span>
 </label>
 
-  <button type="button" style="width:100%;">
-    Sign Up
-  </button>
+  <button type="button" style="width:100%;" onclick="firebaseSignup()">
+  Sign Up
+</button>
 
-<button type="button" style="
+<button type="button" onclick="firebaseDeleteAccount()" style="
   width:100%;
   margin-top:10px;
   background:#ff4d4d;
@@ -235,15 +233,15 @@ button:hover {
 ">
   <h3 style="margin-top:0;">Login</h3>
 
-  <input type="text" placeholder="Name" style="margin-bottom:10px;">
-  <input type="email" placeholder="Email" style="margin-bottom:10px;">
-  <input type="password" placeholder="Password" style="margin-bottom:15px;">
+<input id="signupName" type="text" placeholder="Name" style="margin-bottom:10px;">
+<input id="signupEmail" type="email" placeholder="Email" style="margin-bottom:10px;">
+<input id="signupPassword" type="password" placeholder="Password" style="margin-bottom:15px;">
 
-  <button type="button" style="width:100%;">
-    Login
-  </button>
+  <button type="button" onclick="firebaseLogin()" style="width:100%;">
+  Login
+</button>
 
-<button type="button" style="
+<button type="button" onclick="firebaseLogout()" style="
   width:100%;
   margin-top:10px;
   background:#666;
@@ -613,7 +611,126 @@ button:hover {
   <div id="wheelResult" style="margin-top:15px; font-weight:bold;"></div>
 
 </div>
-<script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+import {
+  getDatabase,
+  ref,
+  set,
+  get,
+  child,
+  remove
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+
+/* CONFIG */
+const firebaseConfig = {
+  apiKey: "AIzaSyBQI4-OSY401huYVP1n2uCejvcmUsrA7HA",
+  authDomain: "fusionslab-accounts.firebaseapp.com",
+  databaseURL: "https://fusionslab-accounts-default-rtdb.firebaseio.com",
+  projectId: "fusionslab-accounts",
+  storageBucket: "fusionslab-accounts.firebasestorage.app",
+  messagingSenderId: "1039705548493",
+  appId: "1:1039705548493:web:4854e3391eeb8ff6adab84"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+/* CREATE SIMPLE USER ID */
+function makeId() {
+  return "user_" + Math.random().toString(36).slice(2,10);
+}
+
+/* SIGN UP (REALTIME DB ONLY) */
+window.firebaseSignup = async function () {
+
+  const name = document.getElementById("signupName").value;
+  const email = document.getElementById("signupEmail").value;
+  const password = document.getElementById("signupPassword").value;
+
+  if (!name || !email || !password) {
+    alert("Fill out all fields");
+    return;
+  }
+
+  const snap = await get(child(ref(db), "accounts"));
+  const data = snap.exists() ? snap.val() : {};
+
+  for (let id in data) {
+    if (data[id].email === email) {
+      alert("Email already exists");
+      return;
+    }
+  }
+
+  const id = makeId();
+
+  await set(ref(db, "accounts/" + id), {
+    id,
+    name,
+    email,
+    password,
+    created: new Date().toISOString()
+  });
+
+  localStorage.setItem("fusionUser", id);
+
+  alert("Account created!");
+};
+
+/* LOGIN */
+window.firebaseLogin = async function () {
+
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+
+  const snap = await get(child(ref(db), "accounts"));
+
+  if (!snap.exists()) {
+    alert("No accounts");
+    return;
+  }
+
+  const users = snap.val();
+
+  for (let id in users) {
+    const u = users[id];
+
+    if (u.email === email && u.password === password) {
+      localStorage.setItem("fusionUser", id);
+      alert("Logged in!");
+      return;
+    }
+  }
+
+  alert("Invalid login");
+};
+
+/* LOGOUT */
+window.firebaseLogout = function () {
+  localStorage.removeItem("fusionUser");
+  alert("Logged out");
+};
+
+/* DELETE ACCOUNT */
+window.firebaseDeleteAccount = async function () {
+
+  const id = localStorage.getItem("fusionUser");
+
+  if (!id) {
+    alert("Not logged in");
+    return;
+  }
+
+  await remove(ref(db, "accounts/" + id));
+
+  localStorage.removeItem("fusionUser");
+
+  alert("Account deleted");
+};
+
+</script>
 
 function showStep(id){
   document.querySelectorAll(".step").forEach(s => {
