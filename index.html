@@ -655,27 +655,31 @@ function goHome() {
 }
 
 function showSignup() {
-  const box = document.getElementById("signupBox");
 
-  if (!box) return;
+  const signupBox = document.getElementById("signupBox");
+  const loginBox = document.getElementById("loginBox");
 
-  const isHidden = getComputedStyle(box).display === "none";
+  const isHidden = getComputedStyle(signupBox).display === "none";
 
-  if (isHidden) {
-    box.style.display = "block"; // 👈 IMPORTANT FIX
-  } else {
-    box.style.display = "none";
-  }
+  // close login box first
+  loginBox.style.display = "none";
+
+  // toggle signup box
+  signupBox.style.display = isHidden ? "block" : "none";
 }
 
 function showLogin() {
-  const box = document.getElementById("loginBox");
 
-  if (!box) return;
+  const loginBox = document.getElementById("loginBox");
+  const signupBox = document.getElementById("signupBox");
 
-  const isHidden = getComputedStyle(box).display === "none";
+  const isHidden = getComputedStyle(loginBox).display === "none";
 
-  box.style.display = isHidden ? "block" : "none";
+  // close signup box first
+  signupBox.style.display = "none";
+
+  // toggle login box
+  loginBox.style.display = isHidden ? "block" : "none";
 }
 
 let service = "";
