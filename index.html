@@ -171,15 +171,11 @@ button:hover {
        transform:translate(-50%, -50%);
      ">
 
- <div class="header-right" style="display:flex; gap:10px;">
+ <div class="header-right">
 
   <button type="button" onclick="showLogin()">
-  Login
-</button>
-
-  <button type="button" onclick="showSignup()">
-  Sign Up
-</button>
+    Login
+  </button>
 
 </div>
 
@@ -251,8 +247,29 @@ button:hover {
   <input type="password" placeholder="Password" style="margin-bottom:15px;">
 
   <button type="button" style="width:100%;">
-    Login
-  </button>
+  Login
+</button>
+
+<div style="
+  margin-top:15px;
+  text-align:center;
+  font-size:14px;
+">
+  <span
+    onclick="
+      document.getElementById('loginBox').style.display='none';
+      document.getElementById('signupBox').style.display='block';
+    "
+    style="
+      color:#0a3d91;
+      text-decoration:underline;
+      cursor:pointer;
+      font-weight:bold;
+    "
+  >
+    Don't have an account? Create one here.
+  </span>
+</div>
 
 <button type="button" style="
   width:100%;
@@ -262,7 +279,6 @@ button:hover {
 ">
   Logout
 </button>
-
 </div>
 
 </div>
